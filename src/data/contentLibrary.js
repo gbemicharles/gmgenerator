@@ -1,7 +1,7 @@
 /**
  * GM Generator - Comprehensive Content Library & Procedural Engine
  * Feature-rich Web3 quote generator with deduplication, TON meme lore, 
- * Pedro character integrations, and procedural variations.
+ * Pedro character integrations, and 22 full categories.
  */
 
 export const CATEGORIES = [
@@ -10,12 +10,63 @@ export const CATEGORIES = [
   { id: 'unhinged', name: 'UNHINGED GM', icon: '🤪', color: '#EC4899' },
   { id: 'ton', name: 'TON ECOSYSTEM', icon: '💎', color: '#0088CC' },
   { id: 'pedro', name: 'PEDRO TRASH BANDIT', icon: '🦝', color: '#A855F7' },
-  { id: 'meme_tokens', name: 'MEME TOKENS ($REDO, $PEDRO...)', icon: '🪙', color: '#10B981' },
+  { id: 'meme_tokens', name: 'MEME TOKENS', icon: '🪙', color: '#10B981' },
   { id: 'crypto', name: 'CRYPTO DEGEN', icon: '🚀', color: '#3B82F6' },
   { id: 'villain', name: 'VILLAIN GM', icon: '😈', color: '#EF4444' },
   { id: 'downbad', name: 'DOWN BAD GM', icon: '📉', color: '#64748B' },
-  { id: 'npc', name: 'NPC GM', icon: '🤖', color: '#8B5CF6' }
+  { id: 'npc', name: 'NPC GM', icon: '🤖', color: '#8B5CF6' },
+  { id: 'bull_market', name: 'BULL MARKET GM', icon: '📈', color: '#22C55E' },
+  { id: 'bear_market', name: 'BEAR MARKET GM', icon: '🐻', color: '#D97706' },
+  { id: 'nft_degens', name: 'NFT DEGEN GM', icon: '🖼️', color: '#8B5CF6' },
+  { id: 'airdrop_hunter', name: 'AIRDROP HUNTER', icon: '🪂', color: '#06B6D4' },
+  { id: 'trader_pro', name: 'PRO TRADER GM', icon: '📊', color: '#10B981' },
+  { id: 'solana_vibes', name: 'SOLANA VIBES', icon: '☀️', color: '#9333EA' },
+  { id: 'eth_maxi', name: 'ETH MAXI GM', icon: '🔷', color: '#6366F1' },
+  { id: 'btc_hodler', name: 'BITCOIN HODLER', icon: '₿', color: '#F7931A' },
+  { id: 'defi_degen', name: 'DEFI YIELD FARMER', icon: '🌾', color: '#84CC16' },
+  { id: 'alpha_caller', name: 'ALPHA CALLER', icon: '📢', color: '#EAB308' },
+  { id: 'dev_builder', name: 'DEV & BUILDER', icon: '💻', color: '#0284C7' },
+  { id: 'coffee_vibes', name: 'MORNING COFFEE', icon: '☕', color: '#B45309' }
 ];
+
+export const COMBINATOR = {
+  prefixes: [
+    "GM to all",
+    "Rise and shine",
+    "Good morning",
+    "Shoutout to",
+    "Salute to",
+    "Big GM to",
+    "Wake up"
+  ],
+  subjects: [
+    "Telegram degens",
+    "TON ecosystem builders",
+    "diamond hands",
+    "meme token hodlers",
+    "audio memecoin squad",
+    "crypto traders",
+    "yield farmers",
+    "future millionaires"
+  ],
+  actions: [
+    "building through the noise",
+    "holding through the dips",
+    "stacking sats daily",
+    "spinning Pedro tracks on loop",
+    "buying every single dip",
+    "scaling Web3 to 900M users",
+    "chasing green candles"
+  ],
+  outros: [
+    "We are all gonna make it! 🚀",
+    "Vibes are 1000%! 💎",
+    "LFG to the moon! 🔥",
+    "Stay relentless! ⚡",
+    "WAGMI frens! 🫡",
+    "Let's win together! 👑"
+  ]
+};
 
 export const STATIC_TEMPLATES = {
   motivational: [
@@ -58,279 +109,179 @@ export const STATIC_TEMPLATES = {
   pedro: [
     "GM! Spinning Pedro the Trash Bandit on loop while checking charts! Vibes are 1000%! 🦝🎶",
     "GM to the greatest audio memecoin on TON! $PEDRO Trash Bandit team is cooking pure unstoppable vibes! 💎🦝",
-    "GM ser! Pedro audio playing at 100% volume. $PEDRO chart dancing, portfolio grooving! 🦝🔥",
-    "GM to everyone vibing with $PEDRO! Uplifting TON meme culture one beat at a time! 💎🦝",
-    "GM! Pedro the Trash Bandit spinning in circles = instant 10x energy for $PEDRO holders! 🦝⚡",
-    "GM to all $PEDRO holders! No sadness allowed, only spinning trash bandit beat drops! 🦝✨",
-    "GM! Woke up, put on the Pedro raccoon beat, and instantly gained +500 financial aura! 🦝🚀"
+    "GM! Pedro DJ spinning the highest volume tracks while Telegram degens buy the dip! 🎧🦝",
+    "GM from Pedro Astronaut! Next stop: the moon, Mars, and the top of Telegram trending! 🚀🦝",
+    "GM! Pedro King crowned with diamond hands! Long live the audio memecoin empire! 👑🦝",
+    "GM Pedro squad! Spinning round and round like Pedro in the meme video! WAGMI! 🔄🦝",
+    "GM! If Pedro is spinning, my conviction is winning! LFG Pedro team! 🦝🔥"
   ],
   meme_tokens: [
-    "GM to the Resistance Dog army! $REDO hooded mascot standing strong for digital freedom! 🐕‍🦺💎",
-    "GM Utya duck army! 🦆 Telegram's yellow duck mascot is quacking at green candles!",
-    "GM! $REDO is not just a token, it's the symbol of unstoppable Telegram resistance! 🐕‍🦺⚡",
-    "GM to Pavel Durov's Resistance Dog! Hood on, conviction high, holding $REDO to the moon! 🐕‍🦺🚀",
-    "GM! Spinning Pedro the Trash Bandit on loop while checking $PEDRO candles! 🦝🎶",
-    "GM ser! 1 $UTYA = 1 Quack of absolute financial independence! 🦆💎",
-    "GM Buddy the Bear holders! 🐻 Turning bear markets into bullish gains on TON!",
-    "GM to the $CHERRY community! Sweetest profits on TON with a cherry on top! 🍒💎",
-    "GM Groyp army! 🐸 Unhinged CT frog energy taking over TON blockchain!"
+    "GM to Resistance Dog $REDO! Standing strong against censorship on Telegram & TON! 🐶🛡️",
+    "GM to $PEDRO holders! Audio meme energy powering the Telegram revolution! 🦝🎶",
+    "GM to $UTYA duck squad! Quacking our way straight to the top of TON DEXs! 🦆💎",
+    "GM to $BUDDY & $CHERRY holders! Pure meme culture leading the next Web3 wave! 🍒🐾",
+    "GM to $GROYP community! Memes speak louder than words in crypto markets! 🎭⚡",
+    "GM! Stacking TON meme tokens before the global mass adoption tsunami! 💎🪙"
   ],
   crypto: [
-    "GM. Buy the dip, mute the bears, and let compounding do its magic.",
-    "GM to everyone who survived the volatility. You're a battle-tested veteran now.",
-    "GM. Not your keys, not your coins. Stay safe, verify everything.",
-    "GM! Bitcoin tick tock next block. The decentralized clock never stops.",
-    "GM to the spot holders chilling through the liquidations. True gigachads.",
-    "GM! Remember to take profits into cold storage. Protect your wins.",
-    "GM. Another day, another opportunity to out-think the traditional finance dinosaurs."
+    "GM degens! Checked portfolio before opening eyes. Up 20% or down 40%, we ride!",
+    "GM to everyone who survived another 100x volatility swing while sleeping.",
+    "GM! Charts are green, coffee is hot, candles are breaking resistance levels!",
+    "GM to those who read whitepapers for fun and trade with 50x leverage for sport.",
+    "GM! Another day, another opportunity to find the next 1000x gem on Telegram.",
+    "GM degen fam! No sleep, no fear, only market orders and pure conviction!"
   ],
   villain: [
-    "GM. While you were sleeping, I manipulated the order book for fun.",
-    "GM. I don't buy the dip, I create the dip to buy your stop-losses.",
-    "GM. Your panic-sell was my limit buy at the exact bottom. Thanks.",
-    "GM to everyone I shorted into oblivion yesterday. Business is business.",
-    "GM. Your technical analysis had a cup and handle. My trade had absolute ruthlessness."
+    "GM. I am once again asking for your stop loss so I can sweep it before mooning.",
+    "GM. Your panic sell at the bottom was my limit buy order. Thank you for your service.",
+    "GM to everyone except the bears shorting my favorite TON ecosystem token.",
+    "GM. Liquidation cascade triggered. My bids were waiting patiently at the bottom.",
+    "GM. I don't follow trends. Trends follow my market buy orders."
   ],
   downbad: [
-    "GM. Down bad but at least my GM speed is at an all-time high.",
-    "GM. My portfolio looks like a crime scene, but my spirits remain mysteriously high.",
-    "GM. Currently calculating how many ramen packets I can buy with my remaining balance.",
-    "GM. I have converted all my pain into pure unadulterated copium.",
-    "GM. They said buy high sell low was a joke, but here I am executing it flawlessly."
+    "GM. Down 90% from ATH but my conviction is up 1000%. We hold till glory.",
+    "GM. Breakfast: instant noodles. Lunch: cope. Dinner: diamond hands.",
+    "GM to everyone whose portfolio is currently bleeding but spirits remain invincible.",
+    "GM. Gas fees cost more than my remaining wallet balance, but I am still here.",
+    "GM. Woke up to 14 liquidation notifications. Refreshed chart and said GM anyway."
   ],
   npc: [
-    "GM! Have a wonderful day filled with productivity and positive vibes!",
-    "GM! Remember to stay hydrated and take regular breaks from your screen!",
-    "GM! Weather forecast predicts green candles and blue skies ahead!",
-    "GM! Wishing you a very pleasant morning and successful trades today!",
-    "GM! Please remember to DYOR and NFA! Have a blessed morning!"
+    "GM! Have a nice day! Remember to drink water and check market prices!",
+    "GM world! Loading daily routine: coffee, Twitter scroll, Telegram check, repeat.",
+    "GM! It is another glorious morning in Web3! Press start to begin your day!",
+    "GM fellow humans! May your trades be profitable and your gas fees low!"
+  ],
+  bull_market: [
+    "GM! Up Only season is here! Every candle is green and every dip is bought in 3 seconds! 📈🚀",
+    "GM to the bull run believers! ATH breaking every hour, portfolio looking legendary! 📈💰",
+    "GM! Wake up, check charts, smile! We are in full bull mode! 📈🔥",
+    "GM! Bears in hibernation, bulls running the show! Pack your bags for the moon! 📈🌕"
+  ],
+  bear_market: [
+    "GM. Bear markets build empires. Keep accumulating quietly while others panic. 🐻🛡️",
+    "GM to the true survivors. Bear markets separate tourists from generational builders. 🐻💎",
+    "GM. Price is noise. Value is real. Stacking sats in the cold winter. 🐻⚡",
+    "GM! The best entries are made when nobody is watching. Keep holding! 🐻🚀"
+  ],
+  nft_degens: [
+    "GM NFT collectors! Right click save is coping, holding the PFP is living! 🖼️💎",
+    "GM! Sweeping floors before breakfast, updating Discord status, vibes 10/10! 🖼️🔥",
+    "GM to the JPEG connoisseurs! Minting at 3 AM with 0 sleep! 🖼️🚀"
+  ],
+  airdrop_hunter: [
+    "GM Airdrop Farmers! 50 wallets interacted, testnets bridged, claim buttons ready! 🪂💰",
+    "GM! Staking, bridging, swapping, voting—doing 100 transactions before sunrise! 🪂⚡",
+    "GM to the relentless drop hunters! Retest, snapshot, claim, repeat! 🪂🔥"
+  ],
+  trader_pro: [
+    "GM traders! Order book analyzed, Fibonacci levels set, risk managed like a boss! 📊💎",
+    "GM. Emotionless execution, strict stop losses, clean profit targets. Let's trade. 📊⚡",
+    "GM to the TA masterminds drawing trendlines on 4-hour charts with surgical precision! 📊🚀"
+  ],
+  solana_vibes: [
+    "GM Solana squad! 65k TPS, instant finality, sub-cent fees all day long! ☀️⚡",
+    "GM SOL degens! Swapping tokens faster than the speed of light! ☀️🔥",
+    "GM to the Solana ecosystem builders! Fast, fluid, unstoppable! ☀️🚀"
+  ],
+  eth_maxi: [
+    "GM ETH Maxis! Ultra sound money, staking yields compounding, L2s scaling to infinity! 🔷⚡",
+    "GM! Ethereum layer 2 fees dropping to fractions of a cent! The world computer is live! 🔷💎",
+    "GM to the Ethereum stakers securing decentralized global financial architecture! 🔷🚀"
+  ],
+  btc_hodler: [
+    "GM Bitcoiners! 21 million hard cap, tick-tock next block, unconfiscatable freedom money! ₿🛡️",
+    "GM! Halving aftermath, institutional ETF inflows, Satoshi's vision winning! ₿⚡",
+    "GM to the HODLers! Not selling a single satoshi for fiat paper money! ₿💎"
+  ],
+  defi_degen: [
+    "GM Yield Farmers! APR high, liquidity pools balanced, harvesting rewards at dawn! 🌾💰",
+    "GM to the DeFi degens providing liquidity across 10 cross-chain vaults! 🌾⚡",
+    "GM! Smart contracts audited, collateral ratio safe, yield compounding nonstop! 🌾🚀"
+  ],
+  alpha_caller: [
+    "GM Alpha Squad! Call dropped in Telegram group before 10x breakout! 📢🔥",
+    "GM! Research done, early entry taken, sharing alpha with the inner circle! 📢💎",
+    "GM to the alpha callers who never miss a trending token runner! 📢⚡"
+  ],
+  dev_builder: [
+    "GM Builders! Code compiling, smart contracts deployed, zero bugs on mainnet! 💻⚡",
+    "GM to the devs working 20-hour shifts building the decentralized future! 💻🛡️",
+    "GM! GitHub commits pushed, unit tests passing 100%, shipping products daily! 💻🚀"
+  ],
+  coffee_vibes: [
+    "GM! Fresh espresso brewing, charts open, mind sharp as a razor! ☕⚡",
+    "GM to coffee lovers who convert caffeine straight into green candles! ☕🔥",
+    "GM! First sip of coffee hit the spot. Ready to conquer the crypto markets! ☕🚀"
   ]
 };
 
-// Combinator Components for Infinite Dynamic Quotes
-export const COMBINATOR = {
-  greetings: [
-    "GM", "Gram morning", "Good morning", "Rise and shine", 
-    "GM frens", "GM gigachads", "GM legends", "GM degenerate fam"
-  ],
-  subjects: [
-    "to the TON ecosystem", "to all memecoin believers", "to the Telegram trench warriors",
-    "to the 100x gem hunters", "to the late-night chart watchers", "to the spot bag holders"
-  ],
-  tonTerms: [
-    "TON ecosystem", "Telegram Mini Apps", "Tap-to-earn games", 
-    "TON blockchain speed", "Telegram wallet", "TON grants", "Gram protocol"
-  ],
-  punchlines: [
-    "full degenerative behavior unlocked for the day",
-    "pure gigachad conviction levels reached",
-    "unstoppable Web3 energy activated",
-    "we are so insanely early to this TON supercycle",
-    "the chart will recover eventually (probably)",
-    "today we pretend everything is completely fine",
-    "another day of making legendary Web3 moves",
-    "the market cannot hurt me anymore, I am 100% numb",
-    "we are either absolute geniuses or completely delusional",
-    "portfolio is down 60% but the vibes remain 1000%",
-    "selling is strictly forbidden by ancient crypto law",
-    "coffee is strong, conviction is even stronger",
-    "touching grass has been officially postponed until Q4"
-  ],
-  endings: [
-    "LFG! 🚀", "We move. 🫡", "Stay safe out there. 💎", 
-    "No roadmap needed.", "Vibes only.", "Send it to zero or infinity.",
-    "WAGMI frens.", "Respectfully.", "In Satoshi & Durov we trust.", "Onwards!"
-  ]
-};
-
-// Generates a random procedural GM quote based on category
-export function generateProceduralGM(categoryId = 'crypto') {
-  const g = COMBINATOR.greetings[Math.floor(Math.random() * COMBINATOR.greetings.length)];
-  const s = COMBINATOR.subjects[Math.floor(Math.random() * COMBINATOR.subjects.length)];
-  const p = COMBINATOR.punchlines[Math.floor(Math.random() * COMBINATOR.punchlines.length)];
-  const e = COMBINATOR.endings[Math.floor(Math.random() * COMBINATOR.endings.length)];
-
-  if (categoryId === 'ton' || categoryId === 'meme_tokens') {
-    const tonGems = [
-      `${g} ${s}. GRAM & TON memecoin season is cooking and ${p}. 💎`,
-      `${g}. Telegram + TON blockchain is the future of Web3. ${e}`,
-      `${g} to everyone building on TON & holding memecoins. ${p}. 💎`,
-      `${g}. TON memecoins pumping, Telegram active, vibes immaculate! 💎⚡`,
-      `${g} ${s}. TON ecosystem speed is fast and conviction is high. ${e}`,
-      `${g}. Another day of building Telegram Mini Apps on TON. ${p}. 💎`
-    ];
-    return tonGems[Math.floor(Math.random() * tonGems.length)];
+export function getRandomGM(category = 'all', excludeQuote = null) {
+  let availableCategories = Object.keys(STATIC_TEMPLATES);
+  if (category !== 'all' && STATIC_TEMPLATES[category]) {
+    availableCategories = [category];
   }
 
-  if (categoryId === 'pedro') {
-    const pedroGems = [
-      `${g} ${s}. Pedro the Trash Bandit audio on loop, vibes are 1000%! 🦝🎶`,
-      `${g}. The Pedro team is cooking the greatest trash bandit audio memecoin on TON! 🦝💎`,
-      `${g} to everyone vibing with Pedro the Trash Bandit on TON. ${p}. 🦝⚡`,
-      `${g}. Pedro audio playing loud, trash bandit spinning, meme culture winning! 🦝🔥`
-    ];
-    return pedroGems[Math.floor(Math.random() * pedroGems.length)];
-  }
+  const randomCategoryKey = availableCategories[Math.floor(Math.random() * availableCategories.length)];
+  const quotesList = STATIC_TEMPLATES[randomCategoryKey];
 
-  const combinationTemplates = [
-    `${g} ${s}. ${p}. ${e}`,
-    `${g}. ${p.charAt(0).toUpperCase() + p.slice(1)}. ${e}`,
-    `${g} ${s}. ${e}`
-  ];
-
-  return combinationTemplates[Math.floor(Math.random() * combinationTemplates.length)];
-}
-
-// Function to fetch GM with history deduplication & custom submission integration
-export function getRandomGM(categoryId = 'all', recentHistory = []) {
-  let targetCategory = categoryId;
-  
-  if (categoryId === 'all') {
-    const realCategories = CATEGORIES.filter(c => c.id !== 'all').map(c => c.id);
-    targetCategory = realCategories[Math.floor(Math.random() * realCategories.length)];
-  }
-
-  if (targetCategory === 'meme_tokens') {
-    const defaultTokens = [
-      { id: 'redo', name: 'Resistance Dog', ticker: '$REDO', icon: '🐕‍🦺' },
-      { id: 'pedro', name: 'Pedro the Trash Bandit', ticker: '$PEDRO', icon: '🦝' },
-      { id: 'utya', name: 'Utya Duck', ticker: '$UTYA', icon: '🦆' },
-      { id: 'buddy', name: 'Buddy the Bear', ticker: '$BUDDY', icon: '🐻' },
-      { id: 'cherry', name: 'Cherry', ticker: '$CHERRY', icon: '🍒' },
-      { id: 'groyp', name: 'Groyp', ticker: '$GROYP', icon: '🐸' }
-    ];
-    const tokenChoice = defaultTokens[Math.floor(Math.random() * defaultTokens.length)];
-    return {
-      text: generateTokenGM(tokenChoice, recentHistory),
-      category: 'meme_tokens'
-    };
-  }
-
-  const staticList = STATIC_TEMPLATES[targetCategory] || STATIC_TEMPLATES.crypto;
-  
-  let customPool = [];
-  try {
-    const raw = localStorage.getItem('gm_generator_custom_submissions_v1');
-    if (raw) {
-      const customSubmissions = JSON.parse(raw);
-      customPool = customSubmissions
-        .filter(s => targetCategory === 'all' || s.category === targetCategory)
-        .map(s => s.text);
+  let quote = quotesList[Math.floor(Math.random() * quotesList.length)];
+  if (excludeQuote && quotesList.length > 1) {
+    let attempts = 0;
+    while (quote === excludeQuote && attempts < 10) {
+      quote = quotesList[Math.floor(Math.random() * quotesList.length)];
+      attempts++;
     }
-  } catch (e) {}
+  }
 
-  const pool = [...staticList, ...customPool];
-
-  // Deduplicate against recent history
-  const available = pool.filter(item => !recentHistory.includes(item));
-  const finalPool = available.length > 0 ? available : pool;
-  
-  const chosen = finalPool[Math.floor(Math.random() * finalPool.length)];
-  
+  const categoryObj = CATEGORIES.find(c => c.id === randomCategoryKey) || CATEGORIES[0];
   return {
-    text: chosen,
-    category: targetCategory
+    quote,
+    category: categoryObj.name,
+    categoryId: categoryObj.id,
+    color: categoryObj.color,
+    icon: categoryObj.icon
   };
 }
 
-// Extensive Token-Specific Meme Lore Templates for TON Tokens
-export const TOKEN_STATIC_TEMPLATES = {
-  redo: [
-    "GM to the Resistance Dog army! $REDO hooded mascot standing strong for digital freedom! 🐕‍🦺💎",
-    "GM! $REDO is not just a token, it's the symbol of unstoppable Telegram resistance! 🐕‍🦺⚡",
-    "GM to Pavel Durov's Resistance Dog! Hood on, conviction high, holding $REDO to the moon! 🐕‍🦺🚀",
-    "GM $REDO family! Digital resistance lives forever on TON! 🐕‍🦺💎",
-    "GM! Redo hooded dog watching over the order book. Freedom always wins! 🐕‍🦺",
-    "GM ser! $REDO Resistance Dog team is building for eternity. Pure digital freedom! 🐕‍🦺⚡",
-    "Gram morning $REDO holders! The hooded mascot leads the Telegram revolution! 🐕‍🦺🚀",
-    "GM to everyone wearing the black hoodie today! $REDO conviction at 1000%! 🐕‍🦺💎",
-    "GM! $REDO holders know that true decentralization cannot be muted! 🐕‍🦺🔥",
-    "GM to the $REDO community! Telegram's iconic hooded dog leading the TON supercycle! 🐕‍🦺✨",
-    "GM! Standing firm with $REDO Resistance Dog. The original Telegram mascot! 🐕‍🦺🫡",
-    "GM $REDO gigachads! Mute the bears, wear the hoodie, stack the tokens! 🐕‍🦺💎"
-  ],
-  utya: [
-    "GM Utya duck army! 🦆 Telegram's yellow duck mascot is quacking at green candles!",
-    "GM ser! 1 $UTYA = 1 Quack of absolute financial independence! 🦆💎",
-    "GM to everyone holding $UTYA! Telegram yellow duck sticker energy unlocked! 🦆🚀",
-    "GM! Quacking my way to financial freedom with Utya duck on TON! 🦆⚡",
-    "GM to the yellow duck believers! Utya season is officially here! 🦆✨",
-    "GM $UTYA holders! Telegram's most legendary duck sticker leading the chart! 🦆🔥",
-    "GM! Woke up, checked $UTYA, quacked loudly, and bought the dip! 🦆💎",
-    "GM to the $UTYA duck pack! Telegram sticker memes taking over Web3! 🦆🚀",
-    "GM! 100% yellow duck energy on TON. $UTYA is flying high! 🦆⚡"
-  ],
-  pedro: [
-    "GM! Spinning Pedro the Trash Bandit on loop while checking $PEDRO candles! 🦝🎶",
-    "GM to the greatest audio memecoin on TON! $PEDRO Trash Bandit team is cooking pure unstoppable vibes! 💎🦝",
-    "GM ser! Pedro audio playing at 100% volume. $PEDRO chart dancing, portfolio grooving! 🦝🔥",
-    "GM to everyone vibing with $PEDRO! Uplifting TON meme culture one beat at a time! 💎🦝",
-    "GM! Pedro the Trash Bandit dancing in circles = instant 10x energy for $PEDRO holders! 🦝⚡",
-    "GM to all $PEDRO holders! No sadness allowed, only spinning trash bandit beat drops! 🦝✨",
-    "GM! Woke up, put on the Pedro raccoon beat, and instantly gained +500 financial aura! 🦝🚀",
-    "GM $PEDRO army! Raccoon energy, spinning beats, and green candles on TON! 🦝💎",
-    "GM! Pedro Trash Bandit audio is the official anthem of TON memecoin season! 🦝🎶"
-  ],
-  buddy: [
-    "GM to Buddy the Bear! 🐻 The friendliest bear mascot on TON turning bear markets into bullish gains!",
-    "GM ser! $BUDDY the Bear energy is unmatched on TON. Hugging green candles all morning! 🐻💎",
-    "GM to all $BUDDY holders! Buddy the Bear leading the TON memecoin season with maximum vibes! 🐻🚀",
-    "GM! $BUDDY Bear team building, community roaring, vibes top tier on TON! 🐻⚡",
-    "GM $BUDDY family! Big bear hugs for all diamond hand holders today! 🐻✨",
-    "GM! Buddy the Bear watching over the order book. Bear market turned bull season! 🐻🔥"
-  ],
-  cherry: [
-    "GM to the $CHERRY community! Sweetest profits on TON with a cherry on top! 🍒💎",
-    "GM ser! Juicy green candles and $CHERRY vibes all morning! 🍒🚀",
-    "GM! Holding $CHERRY for maximum sweetness and 100x flavor! 🍒⚡",
-    "GM to the $CHERRY family! TON season just got a whole lot tastier! 🍒✨",
-    "GM! Top off your portfolio with a sweet $CHERRY pump today! 🍒🔥"
-  ],
-  groyp: [
-    "GM Groyp army! 🐸 Unhinged CT frog energy taking over TON blockchain!",
-    "GM ser! $GROYP conviction is 1000%. We don't sell, we just groyp! 🐸💎",
-    "GM to all my $GROYP bros in the trenches! Unstoppable frog power! 🐸🚀",
-    "GM! $GROYP team cooking, frogs jumping, bears in absolute shambles! 🐸⚡",
-    "GM $GROYP holders! Unhinged frog memes pumping up the TON ecosystem! 🐸🔥"
-  ]
-};
+export function generateTokenGM(token) {
+  const tokenQuotes = {
+    REDO: [
+      "GM Resistance Dog $REDO army! Standing firm for privacy & decentralization on Telegram & TON! 🐶🛡️",
+      "GM $REDO holders! The mascot of digital resistance leading the TON meme surge! 🐶⚡"
+    ],
+    PEDRO: [
+      "GM $PEDRO squad! The ultimate audio memecoin on TON spinning nonstop vibes! 🦝🎶",
+      "GM $PEDRO holders! Pedro Team audio memecoin culture cooking maximum energy! 🦝🔥"
+    ],
+    UTYA: [
+      "GM $UTYA duck army! Quacking our way straight to the top of Telegram DEXs! 🦆💎",
+      "GM $UTYA holders! TON duck memes flying high with unstoppable community power! 🦆⚡"
+    ],
+    BUDDY: [
+      "GM $BUDDY holders! Best friends in crypto building the ultimate TON meme vibe! 🐾✨",
+      "GM $BUDDY squad! Loyalty, memes, and green candles all day long! 🐾🚀"
+    ],
+    CHERRY: [
+      "GM $CHERRY holders! Sweetest meme token on TON picking green candles daily! 🍒🔥",
+      "GM $CHERRY community! Fresh vibes, high volume, maximum momentum! 🍒💎"
+    ],
+    GROYP: [
+      "GM $GROYP army! Memes speak louder than words in crypto markets! 🎭⚡",
+      "GM $GROYP holders! Unhinged meme power taking over Telegram! 🎭🚀"
+    ]
+  };
 
-// Dynamic Deduplication History Tracker for Meme Tokens
-let globalTokenHistory = [];
-
-// Enhanced Token GM Generator with Zero-Repetition Guarantee
-export function generateTokenGM(tokenObj, recentHistory = []) {
-  if (!tokenObj) return getRandomGM('ton', recentHistory).text;
-
-  const tokenId = tokenObj.id;
-  const ticker = tokenObj.ticker ? (tokenObj.ticker.startsWith('$') ? tokenObj.ticker : `$${tokenObj.ticker}`) : `$${(tokenObj.name || 'TOKEN').toUpperCase()}`;
-  const icon = tokenObj.icon || '🪙';
-  const name = tokenObj.name || 'Meme Token';
-
-  const staticList = TOKEN_STATIC_TEMPLATES[tokenId] || [];
-
-  // Procedural Templates for Custom/Dynamic Tokens
-  const proceduralTemplates = [
-    `GM to the ${name} ${icon} community! ${ticker} is cooking pure unstoppable vibes on TON! 💎`,
-    `GM ser! Holding ${ticker} ${icon} with absolute gigachad conviction today. ${ticker} to the moon! 🚀`,
-    `Gram morning ${name} family! ${ticker} ${icon} season is officially HERE on TON! ⚡`,
-    `GM to all ${ticker} ${icon} holders! Chart is dancing, community is grooving, vibes immaculate! 🔥`,
-    `GM! ${name} team is building 24/7. ${ticker} ${icon} unstoppable momentum! 💎`,
-    `GM to the ${ticker} ${icon} trench warriors! Holding strong for generational gains! 🫡`,
-    `GM! Coffee brewing, Telegram active, ${ticker} ${icon} chart looking ultra bullish today! 🚀`,
-    `GM ${name} holders! ${ticker} ${icon} is the sweetest play in the entire TON ecosystem! 💎`
+  const symbol = token.symbol.toUpperCase();
+  const list = tokenQuotes[symbol] || [
+    `GM $${symbol} holders! Stacking ${token.name} tokens before the next massive wave! 🪙🚀`
   ];
 
-  const fullPool = [...staticList, ...proceduralTemplates];
-
-  // Exclude recent history to prevent repetition
-  const available = fullPool.filter(item => !recentHistory.includes(item) && !globalTokenHistory.includes(item));
-  const pool = available.length > 0 ? available : fullPool;
-
-  const chosen = pool[Math.floor(Math.random() * pool.length)];
-
-  // Update global token history ring buffer (30 items memory)
-  globalTokenHistory = [chosen, ...globalTokenHistory.slice(0, 30)];
-
-  return chosen;
+  const quote = list[Math.floor(Math.random() * list.length)];
+  return {
+    quote,
+    category: `${token.symbol} COMMUNITY`,
+    categoryId: 'meme_tokens',
+    color: '#10B981',
+    icon: '🪙'
+  };
 }
