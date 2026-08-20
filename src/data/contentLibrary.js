@@ -8,7 +8,7 @@ export const CATEGORIES = [
   { id: 'all', name: 'ALL CATEGORIES', icon: '✨', color: '#F3BA2F' },
   { id: 'motivational', name: 'MOTIVATIONAL GM', icon: '🔥', color: '#F59E0B' },
   { id: 'unhinged', name: 'UNHINGED GM', icon: '🤪', color: '#EC4899' },
-  { id: 'ton', name: 'TON ECOSYSTEM', icon: '💎', color: '#0088CC' },
+  { id: 'ton', name: 'TON / GRAM ECOSYSTEM', icon: '💎', color: '#0088CC' },
   { id: 'pedro', name: 'PEDRO TRASH BANDIT', icon: '🦝', color: '#A855F7' },
   { id: 'meme_tokens', name: 'MEME TOKENS', icon: '🪙', color: '#10B981' },
   { id: 'crypto', name: 'CRYPTO DEGEN', icon: '🚀', color: '#3B82F6' },
@@ -96,14 +96,15 @@ export const STATIC_TEMPLATES = {
     "GM! MY HEART BEATS AT 180 BPM AND MY LEVERAGE IS AT 100X! LET'S MOOOOVE!"
   ],
   ton: [
-    "GM to the TON Ecosystem! Telegram + TON is scaling Web3 to the next billion users! 💎",
-    "GM TON builders! Fast speed, low fees, 900M Telegram users ready to onboard! 💎⚡",
-    "GM to everyone holding TON & building Telegram Mini Apps! The future is tap-to-earn & Web3 games! 💎🚀",
-    "GM! TON memecoin season is heating up! Telegram wallets active, liquidity flowing! 💎🔥",
+    "GRAM Morning to the TON Ecosystem! Telegram + TON + GRAM is scaling Web3 to the next billion users! 💎",
+    "GM to all GRAM holders & TON builders! Stacking $GRAM on Telegram Wallets daily! 💎⚡",
+    "GRAM Morning! Pavel Durov's Gram currency powering TON decentralization! 💎🫡",
+    "GM GRAM army! Checking my Gram balance & Telegram Mini Apps before breakfast! 💎📱",
+    "GRAM Morning! $GRAM transactions settling at lightning speed on TON blockchain! 💎🚀",
+    "GM to Gram diamond hands & TON ecosystem pioneers! We are early! 💎🔥",
+    "GM! TON + GRAM memecoin season is heating up! Liquidity flowing on Telegram! 💎⚡",
+    "GRAM Morning! Telegram Wallets funded with Gram, vibes 1000%! 💎✨",
     "GM to the Open Network! Pavel Durov's vision of digital freedom lives forever on TON! 💎🫡",
-    "GM TON army! Checking my Telegram Mini Apps before I even brush my teeth! 💎📱",
-    "GM! TON smart contracts compiling, Telegram bots running 24/7, vibes immaculate! 💎✨",
-    "GM to all Gram & TON ecosystem diamond hands! We are so insanely early! 💎🚀",
     "GM TON community! Fast finality, native Telegram integration, unstoppable momentum! 💎⚡"
   ],
   pedro: [
