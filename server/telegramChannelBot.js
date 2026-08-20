@@ -51,7 +51,7 @@ function saveSubscribedUser(chatObj) {
     users.push(newUser);
     try {
       fs.writeFileSync(USERS_FILE_PATH, JSON.stringify(users, null, 2), 'utf8');
-      console.log(`👤 Registered new user for daily GM reminders: ${chatObj.id} (${chatObj.username || 'user'})`);
+      console.log(`Registered new user for daily GM reminders: ${chatObj.id} (${chatObj.username || 'user'})`);
     } catch (e) {
       console.error('Error saving subscribed user:', e);
     }
@@ -77,7 +77,7 @@ function toggleUserReminders(chatId, enable = true) {
   } catch (e) {}
 }
 
-// Clean text helper to strip emojis for pure clean caption text output
+// Clean text helper to strip emojis for pure clean text output
 function stripEmojis(str) {
   if (!str) return '';
   return str
@@ -200,7 +200,7 @@ Generate your preferred daily GM post with @generategmbot`;
 }
 
 /**
- * 2. Daily Morning User GM Reminder Broadcast Generator
+ * 2. Daily Morning User GM Reminder Broadcast Generator (Clean, Zero Emojis)
  */
 export async function sendDailyUserReminders() {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
@@ -209,20 +209,20 @@ export async function sendDailyUserReminders() {
   if (!botToken) return;
 
   const users = getSubscribedUsers().filter(u => u.remindersEnabled !== false);
-  console.log(`⏰ Sending daily morning GM reminders to ${users.length} user(s)...`);
+  console.log(`Sending daily morning GM reminders to ${users.length} user(s)...`);
 
   const reminderText = 
-`☀️ *Good Morning! Time to generate your GM post!* 🚀
+`*Good Morning! Time to generate your GM post!*
 
 Keep your streak alive, level up your GM rank, and drop today's GM quote to your channel & groups!
 
-👇 *Tap below to launch the Mini App:*`;
+Tap below to launch the Mini App:`;
 
   const inlineKeyboard = {
     inline_keyboard: [
       [
         {
-          text: '🚀 Open GM Generator App',
+          text: 'Open GM Generator App',
           web_app: { url: webAppDirectUrl }
         }
       ]
@@ -247,7 +247,7 @@ Keep your streak alive, level up your GM rank, and drop today's GM quote to your
     } catch (e) {}
   }
 
-  console.log(`✅ Daily user GM reminders sent to ${count}/${users.length} user(s)!`);
+  console.log(`Daily user GM reminders sent to ${count}/${users.length} user(s)!`);
 }
 
 /**
@@ -258,11 +258,11 @@ export function startTelegramBotListener() {
   const webAppDirectUrl = process.env.WEBAPP_URL || process.env.VITE_APP_URL || 'https://gmgenerator-production.up.railway.app';
 
   if (!botToken) {
-    console.log('ℹ️ Telegram Bot Listener standby (TELEGRAM_BOT_TOKEN not set).');
+    console.log('Telegram Bot Listener standby (TELEGRAM_BOT_TOKEN not set).');
     return;
   }
 
-  console.log('🤖 Telegram Bot Command Listener active! Listening for /start, /postgm or /gm in Telegram chat.');
+  console.log('Telegram Bot Command Listener active! Listening for /start, /postgm or /gm in Telegram chat.');
 
   // Clear Webhooks on startup to prevent conflict error 409
   fetch(`https://api.telegram.org/bot${botToken}/deleteWebhook?drop_pending_updates=false`)
@@ -282,7 +282,7 @@ export function startTelegramBotListener() {
       })
     }).then(res => res.json()).then(data => {
       if (data.ok) {
-        console.log('✅ Telegram Chat Menu Button set to Open App!');
+        console.log('Telegram Chat Menu Button set to Open App!');
       }
     }).catch(() => {});
   } catch (e) {}
@@ -309,28 +309,28 @@ export function startTelegramBotListener() {
 
           const text = msg.text.trim();
 
-          // Handle /start or /help command
+          // Handle /start or /help command (Clean, Zero Emojis)
           if (text.startsWith('/start') || text.startsWith('/help')) {
-            console.log(`📩 /start command received from chat ${msg.chat.id}`);
+            console.log(`/start command received from chat ${msg.chat.id}`);
 
             const welcomeText = 
-`☀️ *Welcome to GM Generator!* 🚀
+`*Welcome to GM Generator!*
 
 Generate your preferred daily GM posts, level up your streak, unlock achievements, and post GM cards in one tap!
 
-👇 *Tap below to launch the Mini App:*`;
+Tap below to launch the Mini App:`;
 
             const inlineKeyboard = {
               inline_keyboard: [
                 [
                   {
-                    text: '🚀 Open GM Generator App',
+                    text: 'Open GM Generator App',
                     web_app: { url: webAppDirectUrl }
                   }
                 ],
                 [
                   {
-                    text: '📢 Join @generategm Channel',
+                    text: 'Join @generategm Channel',
                     url: 'https://t.me/generategm'
                   }
                 ]
@@ -358,7 +358,7 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 chat_id: msg.chat.id,
-                text: '🔕 *Daily GM Reminders muted.* Send /remind anytime to re-enable!',
+                text: '*Daily GM Reminders muted.* Send /remind anytime to re-enable!',
                 parse_mode: 'Markdown'
               })
             });
@@ -372,7 +372,7 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 chat_id: msg.chat.id,
-                text: '🔔 *Daily GM Reminders activated!* You will receive your daily morning GM alert!',
+                text: '*Daily GM Reminders activated!* You will receive your daily morning GM alert!',
                 parse_mode: 'Markdown'
               })
             });
@@ -381,7 +381,7 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
 
           // Handle /postgm, /gm, /broadcast, /dropgm commands
           if (text.startsWith('/postgm') || text.startsWith('/gm') || text.startsWith('/broadcast') || text.startsWith('/dropgm')) {
-            console.log(`📩 Command '${text}' received from chat ${msg.chat.id}`);
+            console.log(`Command '${text}' received from chat ${msg.chat.id}`);
 
             const customText = text.replace(/^\/(postgm|gm|broadcast|dropgm)(@\w+)?\s*/i, '').trim();
             const result = await sendDailyChannelPost(customText || null);
@@ -389,8 +389,8 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
             if (msg.chat && msg.chat.id) {
               const replyUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
               const replyText = result.success
-                ? `✅ *GM Photo Card Sent to Channel!*\n\n*Message ID:* \`${result.messageId}\``
-                : `❌ *Broadcast Failed:* ${result.error}`;
+                ? `*GM Photo Card Sent to Channel!*\n\n*Message ID:* \`${result.messageId}\``
+                : `*Broadcast Failed:* ${result.error}`;
 
               await fetch(replyUrl, {
                 method: 'POST',
@@ -421,16 +421,16 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
 export function startDailyBroadcastScheduler() {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
   if (!botToken) {
-    console.log('ℹ️ Daily Broadcast Scheduler standby (TELEGRAM_BOT_TOKEN not set).');
+    console.log('Daily Broadcast Scheduler standby (TELEGRAM_BOT_TOKEN not set).');
     return;
   }
 
   // 1. Daily Channel Photo Card Broadcast (Default: 8:00 AM UTC)
   const channelCronPattern = process.env.BROADCAST_CRON_SCHEDULE || '0 8 * * *';
-  console.log(`⏰ Daily Channel GM Broadcast active! Schedule pattern: '${channelCronPattern}'`);
+  console.log(`Daily Channel GM Broadcast active! Schedule pattern: '${channelCronPattern}'`);
 
   cron.schedule(channelCronPattern, async () => {
-    console.log('⏰ Running automated daily morning GM broadcast to Telegram Channel...');
+    console.log('Running automated daily morning GM broadcast to Telegram Channel...');
     try {
       const result = await sendDailyChannelPost();
       console.log('Daily Channel Broadcast Result:', result);
@@ -441,10 +441,10 @@ export function startDailyBroadcastScheduler() {
 
   // 2. Daily User Morning GM Reminder Broadcast (Default: 9:00 AM UTC)
   const userReminderCronPattern = process.env.REMINDER_CRON_SCHEDULE || '0 9 * * *';
-  console.log(`⏰ Daily User GM Reminder Scheduler active! Schedule pattern: '${userReminderCronPattern}'`);
+  console.log(`Daily User GM Reminder Scheduler active! Schedule pattern: '${userReminderCronPattern}'`);
 
   cron.schedule(userReminderCronPattern, async () => {
-    console.log('⏰ Running automated daily user GM reminder broadcast...');
+    console.log('Running automated daily user GM reminder broadcast...');
     try {
       await sendDailyUserReminders();
     } catch (err) {
@@ -460,7 +460,7 @@ const isDirectRun = process.argv[1] && (
 );
 
 if (isDirectRun) {
-  console.log('🚀 Triggering immediate 16:9 GM Photo Card Broadcast test...');
+  console.log('Triggering immediate 16:9 GM Photo Card Broadcast test...');
   sendDailyChannelPost().then(res => {
     console.log('Broadcast Result:', JSON.stringify(res, null, 2));
   });
