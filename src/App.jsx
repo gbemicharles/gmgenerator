@@ -152,12 +152,17 @@ export default function App() {
   const scrollToResultCard = () => {
     setTimeout(() => {
       const el = document.getElementById('gm-result-card');
+      const headerEl = document.querySelector('.header-container');
       if (el) {
-        const yOffset = -85; 
-        const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+        const headerHeight = headerEl ? headerEl.offsetHeight : 70;
+        const rect = el.getBoundingClientRect();
+        const absoluteTop = rect.top + window.pageYOffset;
+        // Position card cleanly 12px below the sticky header
+        const targetY = Math.max(0, absoluteTop - (headerHeight + 12));
+
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
       }
-    }, 60);
+    }, 120);
   };
 
   const handleSelectPedroCharacter = async (char) => {
@@ -200,8 +205,6 @@ export default function App() {
     setIsGenerating(true);
     setCopied(false);
     setUserGenCount(prev => prev + 1);
-
-    scrollToResultCard();
 
     setTimeout(() => {
       let gmText = '';
