@@ -1,26 +1,12 @@
 /**
  * Telegram Daily Broadcast Bot Script for @generategmbot
- * Renders the exact Web App Shareable GM Photo Card (with quote text inside card) 
- * and attaches quote text caption + inline buttons.
+ * Renders exact 1000x1000 Square GM Photo Card Image matching user example
+ * and posts via sendPhoto with quote caption & inline app buttons.
  */
 
 import 'dotenv/config';
 import { STATIC_TEMPLATES, CATEGORIES } from '../src/data/contentLibrary.js';
 import { renderGMCardImage } from './generateCardImage.js';
-
-// Pedro Mascot Characters list
-const PEDRO_CHARACTERS = [
-  { name: 'Pedro King', file: 'pedro_king.png' },
-  { name: 'Pedro Astronaut', file: 'pedro_astronaut.png' },
-  { name: 'Pedro DJ', file: 'pedro_dj.png' },
-  { name: 'Pedro Diamond', file: 'pedro_diamond.png' },
-  { name: 'Pedro Rocket', file: 'pedro_rocket.png' },
-  { name: 'Pedro Rockstar', file: 'pedro_rockstar.png' },
-  { name: 'Pedro Wizard', file: 'pedro_wizard.png' },
-  { name: 'Pedro Copium', file: 'pedro_copium.png' },
-  { name: 'Pedro Rekt', file: 'pedro_rekt.png' },
-  { name: 'Pedro Clown', file: 'pedro_clown.png' }
-];
 
 // Clean text helper to strip emojis for pure clean caption text output
 function stripEmojis(str) {
@@ -45,7 +31,7 @@ export async function sendDailyChannelPost(customText = null) {
 
   // Pick category and quote
   let rawQuote = '';
-  let categoryObj = { name: 'MOTIVATIONAL', color: '#F59E0B' };
+  let categoryObj = { name: '3AM GM', icon: '🌙', color: '#38BDF8' };
 
   if (customText) {
     rawQuote = customText;
@@ -62,9 +48,8 @@ export async function sendDailyChannelPost(customText = null) {
   }
 
   const cleanQuote = stripEmojis(rawQuote);
-  const selectedPedro = PEDRO_CHARACTERS[Math.floor(Math.random() * PEDRO_CHARACTERS.length)];
 
-  // Caption underneath photo card
+  // Caption text underneath photo card
   const caption = 
 `DAILY GM BROADCAST
 
@@ -72,7 +57,7 @@ export async function sendDailyChannelPost(customText = null) {
 
 Generate your daily GM post with @generategmbot`;
 
-  // Clean inline buttons (no emojis)
+  // Clean inline keyboard buttons (no emojis)
   const cleanChannel = channelId.startsWith('@') ? channelId : `@${channelId}`;
   const inlineKeyboard = {
     inline_keyboard: [
@@ -92,8 +77,8 @@ Generate your daily GM post with @generategmbot`;
   };
 
   try {
-    // 1. Render exact Web App GM Photo Card PNG Buffer with embedded quote inside image
-    const cardPngBuffer = await renderGMCardImage(cleanQuote, categoryObj, selectedPedro);
+    // 1. Render exact 1:1 1000x1000 Square GM Card PNG Image Buffer (matching user example photo)
+    const cardPngBuffer = await renderGMCardImage(cleanQuote, categoryObj);
 
     // 2. Upload PNG Photo File Buffer via Telegram sendPhoto API using Blob FormData
     const photoApiUrl = `https://api.telegram.org/bot${botToken}/sendPhoto`;
@@ -101,7 +86,7 @@ Generate your daily GM post with @generategmbot`;
 
     const formData = new FormData();
     formData.append('chat_id', channelId);
-    formData.append('photo', photoBlob, 'gm_card_image.png');
+    formData.append('photo', photoBlob, 'gm_card_1000x1000.png');
     formData.append('caption', caption);
     formData.append('parse_mode', 'Markdown');
     formData.append('reply_markup', JSON.stringify(inlineKeyboard));
@@ -133,13 +118,13 @@ Generate your daily GM post with @generategmbot`;
     }
 
     if (result.ok) {
-      console.log('✅ GM Photo Card Broadcast posted to Telegram!', result.result.message_id);
+      console.log('✅ Exact Square GM Photo Card Broadcast posted to Telegram!', result.result.message_id);
       return {
         success: true,
         messageId: result.result.message_id,
         chat: channelId,
         quote: cleanQuote,
-        card: selectedPedro.name
+        category: categoryObj.name
       };
     } else {
       console.error('❌ Failed to post to Telegram:', result.description);
@@ -228,7 +213,7 @@ const isDirectRun = process.argv[1] && (
 );
 
 if (isDirectRun) {
-  console.log('🚀 Triggering immediate Web App GM Photo Card Broadcast test...');
+  console.log('🚀 Triggering immediate Square GM Photo Card Broadcast test...');
   sendDailyChannelPost().then(res => {
     console.log('Broadcast Result:', JSON.stringify(res, null, 2));
   });
