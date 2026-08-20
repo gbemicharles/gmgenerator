@@ -1,7 +1,7 @@
 /**
  * Telegram Daily Broadcast & Command Listener Bot Script for @generategmbot
  * Handles automated channel broadcasts, /start command welcome messages,
- * and dual Telegram Mini App button launching.
+ * and single Open App inline button launching.
  */
 
 import 'dotenv/config';
@@ -56,7 +56,7 @@ export async function sendDailyChannelPost(customText = null) {
 
 Generate your preferred daily GM post with @generategmbot`;
 
-  // Inline keyboard button with native web_app property
+  // Inline keyboard button (Single Open App button)
   const inlineKeyboard = {
     inline_keyboard: [
       [
@@ -141,7 +141,6 @@ Generate your preferred daily GM post with @generategmbot`;
 export function startTelegramBotListener() {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
   const webAppDirectUrl = process.env.WEBAPP_URL || process.env.VITE_APP_URL || 'https://gmgenerator-production.up.railway.app';
-  const tmeAppUrl = 'https://t.me/generategmbot/app';
 
   if (!botToken) {
     console.log('ℹ️ Telegram Bot Listener standby (TELEGRAM_BOT_TOKEN not set).');
@@ -149,6 +148,10 @@ export function startTelegramBotListener() {
   }
 
   console.log('🤖 Telegram Bot Command Listener active! Listening for /start, /postgm or /gm in Telegram chat.');
+
+  // Clear Webhooks on startup to prevent conflict error 409
+  fetch(`https://api.telegram.org/bot${botToken}/deleteWebhook?drop_pending_updates=false`)
+    .catch(() => {});
 
   // Set Telegram Native Bottom Left Menu Button to open Mini App
   try {
@@ -173,11 +176,11 @@ export function startTelegramBotListener() {
 
   const pollUpdates = async () => {
     try {
-      const url = `https://api.telegram.org/bot${botToken}/getUpdates?offset=${offset}&timeout=10`;
+      const url = `https://api.telegram.org/bot${botToken}/getUpdates?offset=${offset}&timeout=20`;
       const response = await fetch(url);
       const data = await response.json();
 
-      if (data.ok && Array.isArray(data.result) && data.result.length > 0) {
+      if (data.ok && Array.isArray(data.result)) {
         for (const update of data.result) {
           offset = Math.max(offset, update.update_id + 1);
 
@@ -193,7 +196,7 @@ export function startTelegramBotListener() {
             const welcomeText = 
 `☀️ *Welcome to GM Generator!* 🚀
 
-Generate your preferred daily GM posts, level up your streak, unlock achievements, and share custom GM cards to your groups & channel!
+Generate your preferred daily GM posts, level up your streak, unlock achievements, and post GM cards in one tap!
 
 👇 *Tap below to launch the Mini App:*`;
 
@@ -203,18 +206,6 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
                   {
                     text: '🚀 Open GM Generator App',
                     web_app: { url: webAppDirectUrl }
-                  }
-                ],
-                [
-                  {
-                    text: '⚡ Launch Mini App',
-                    url: tmeAppUrl
-                  }
-                ],
-                [
-                  {
-                    text: '📢 Join @generategm Channel',
-                    url: 'https://t.me/generategm'
                   }
                 ]
               ]
@@ -261,11 +252,13 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
             }
           }
         }
+      } else if (!data.ok) {
+        console.warn('Telegram polling warning:', data.description);
       }
     } catch (err) {
       console.error('Error in polling loop:', err.message);
     } finally {
-      setTimeout(pollUpdates, 1500);
+      setTimeout(pollUpdates, 1000);
     }
   };
 
