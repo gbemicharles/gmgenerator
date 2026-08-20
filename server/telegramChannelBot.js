@@ -1,7 +1,7 @@
 /**
  * Telegram Daily Broadcast & Command Listener Bot Script for @generategmbot
  * Handles automated channel broadcasts, /start command welcome messages,
- * and single Open App inline button launching.
+ * and Telegram Mini App button launching with channel join link.
  */
 
 import 'dotenv/config';
@@ -56,7 +56,7 @@ export async function sendDailyChannelPost(customText = null) {
 
 Generate your preferred daily GM post with @generategmbot`;
 
-  // Inline keyboard button (Single Open App button)
+  // Inline keyboard button (Single Open App button for channel broadcast)
   const inlineKeyboard = {
     inline_keyboard: [
       [
@@ -206,6 +206,12 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
                   {
                     text: '🚀 Open GM Generator App',
                     web_app: { url: webAppDirectUrl }
+                  }
+                ],
+                [
+                  {
+                    text: '📢 Join @generategm Channel',
+                    url: 'https://t.me/generategm'
                   }
                 ]
               ]

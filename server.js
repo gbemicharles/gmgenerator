@@ -54,6 +54,12 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
               text: '🚀 Open GM Generator App',
               web_app: { url: webAppDirectUrl }
             }
+          ],
+          [
+            {
+              text: '📢 Join @generategm Channel',
+              url: 'https://t.me/generategm'
+            }
           ]
         ]
       };
