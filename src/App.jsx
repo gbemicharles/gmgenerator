@@ -211,11 +211,12 @@ export default function App() {
       let targetCat = catId;
 
       if (catId === 'meme_tokens') {
-        gmText = generateTokenGM(tokenTarget || selectedToken);
+        const tokenRes = generateTokenGM(tokenTarget || selectedToken);
+        gmText = tokenRes.quote;
       } else {
-        const result = getRandomGM(catId, recentHistory);
-        gmText = result.text;
-        targetCat = result.category;
+        const result = getRandomGM(catId, recentHistory[0]);
+        gmText = result.quote;
+        targetCat = result.categoryId;
       }
       
       let matchedToken = null;
