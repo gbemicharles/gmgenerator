@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "start": "vite preview --port $PORT --host",
+    "start": "serve -s dist -l $PORT",
     "bot": "node server/telegramChannelBot.js",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -15,8 +15,11 @@
     "canvas-confetti": "^1.9.4",
     "html2canvas": "^1.4.1",
     "lucide-react": "^1.33.0",
+    "node-fetch": "^3.3.2",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "serve": "^14.2.6",
+    "vite": "^6.3.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
@@ -26,7 +29,6 @@
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
-    "globals": "^16.0.0",
-    "vite": "^6.3.5"
+    "globals": "^16.0.0"
   }
 }
