@@ -39,10 +39,35 @@ export default function SubscribeChannelModal({ isOpen, onClose, onConfirmSubscr
     }
 
     try {
-      const res = await fetch(`/api/verify-sub?userId=${userId}`);
-      const data = await res.json();
+      const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+      let isSubscribed = false;
 
-      if (data.isSubscribed) {
+      if (botToken) {
+        // Direct Telegram API check from client using botToken
+        const channelUsername = '@generategm';
+        const url = `https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${encodeURIComponent(channelUsername)}&user_id=${userId}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.ok && data.result) {
+          const status = data.result.status;
+          isSubscribed = ['creator', 'administrator', 'member', 'restricted'].includes(status);
+        }
+      } else {
+        // Try backend API route if available
+        try {
+          const res = await fetch(`/api/verify-sub?userId=${userId}`);
+          const data = await res.json();
+          if (data.isSubscribed || data.requiresBotToken) {
+            isSubscribed = true;
+          }
+        } catch (e) {
+          // Static server fallback
+          isSubscribed = true;
+        }
+      }
+
+      if (isSubscribed) {
         setIsVerifying(false);
         audioEngine.playGMChime();
         triggerHaptic('notification', 'success');
@@ -51,18 +76,11 @@ export default function SubscribeChannelModal({ isOpen, onClose, onConfirmSubscr
         setIsVerifying(false);
         audioEngine.playSlotSpin();
         triggerHaptic('notification', 'error');
-
-        if (data.requiresBotToken) {
-          // If server env hasn't set TELEGRAM_BOT_TOKEN yet, notify user & unlock gracefully
-          onConfirmSubscribed();
-        } else {
-          setErrorMsg('❌ Verification failed: You have not joined @generategm yet! Tap JOIN @generategm CHANNEL first.');
-        }
+        setErrorMsg('❌ Verification failed: You have not joined @generategm yet! Tap JOIN @generategm CHANNEL first.');
       }
     } catch (e) {
       console.error('Subscription verification failed:', e);
       setIsVerifying(false);
-      // Network fallback
       onConfirmSubscribed();
     }
   };
