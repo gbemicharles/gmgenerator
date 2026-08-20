@@ -1,129 +1,162 @@
 import { createCanvas } from '@napi-rs/canvas';
 
 /**
- * Renders a standard, ultra-premium 1080x1080 Square GM Photo Card.
- * Clean, bold, centered Web3 design without mascot artwork or awkward empty spaces.
+ * Ultra-Aesthetic Web3 GM Photo Card Image Generator.
+ * Features massive hero typography, vibrant aura mesh gradients, 
+ * glassmorphic neon borders, and state-of-the-art social card aesthetics.
  * 
- * @param {string} quoteText - The GM quote string
+ * @param {string} quoteText - GM quote string
  * @param {object} categoryObj - { name: 'MOTIVATIONAL', icon: '🔥', color: '#F3BA2F' }
  * @returns {Promise<Buffer>} PNG Image Buffer
  */
-export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVATIONAL', icon: '🔥', color: '#F3BA2F' }) {
+export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVATIONAL', icon: '🔥', color: '#F59E0B' }) {
   const size = 1080;
   const canvas = createCanvas(size, size);
   const ctx = canvas.getContext('2d');
 
-  const accentColor = categoryObj.color || '#F3BA2F';
+  const accentColor = categoryObj.color || '#F59E0B';
   const categoryIcon = categoryObj.icon || '☀️';
   const categoryName = (categoryObj.name || 'DAILY GM').toUpperCase();
 
-  // 1. Sleek Cyber Dark Gradient Background
-  const bgGrad = ctx.createLinearGradient(0, 0, size, size);
-  bgGrad.addColorStop(0, '#0A0E17');
-  bgGrad.addColorStop(0.5, '#111726');
-  bgGrad.addColorStop(1, '#060910');
-  ctx.fillStyle = bgGrad;
+  // 1. Deep Obsidian Base
+  ctx.fillStyle = '#05070E';
   ctx.fillRect(0, 0, size, size);
 
-  // 2. Subtle Radial Background Glow (Centered behind text)
+  // 2. Vibrant Mesh Aura Gradients
   ctx.save();
-  const radialGlow = ctx.createRadialGradient(size / 2, size / 2, 50, size / 2, size / 2, 480);
-  radialGlow.addColorStop(0, `${accentColor}1C`);
-  radialGlow.addColorStop(0.7, 'rgba(0, 136, 204, 0.08)');
-  radialGlow.addColorStop(1, 'transparent');
-  ctx.fillStyle = radialGlow;
+  // Top-Left Category Neon Glow
+  const aura1 = ctx.createRadialGradient(220, 200, 20, 220, 200, 520);
+  aura1.addColorStop(0, `${accentColor}44`);
+  aura1.addColorStop(0.5, `${accentColor}18`);
+  aura1.addColorStop(1, 'transparent');
+  ctx.fillStyle = aura1;
+  ctx.fillRect(0, 0, size, size);
+
+  // Bottom-Right Purple/Cyan Cosmic Aura
+  const aura2 = ctx.createRadialGradient(860, 860, 20, 860, 860, 560);
+  aura2.addColorStop(0, 'rgba(153, 69, 255, 0.30)');
+  aura2.addColorStop(0.6, 'rgba(56, 189, 248, 0.12)');
+  aura2.addColorStop(1, 'transparent');
+  ctx.fillStyle = aura2;
   ctx.fillRect(0, 0, size, size);
   ctx.restore();
 
-  // 3. Card Container Box (Padding 48px around)
-  const margin = 48;
-  const cardSize = size - margin * 2;
-  const borderRadius = 32;
-
-  // Glass Container Fill
+  // 3. Subtle Cyber Grid Texture
   ctx.save();
-  ctx.fillStyle = 'rgba(15, 22, 35, 0.9)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+  ctx.lineWidth = 1;
+  const gridSize = 60;
+  for (let x = 0; x < size; x += gridSize) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, size);
+    ctx.stroke();
+  }
+  for (let y = 0; y < size; y += gridSize) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(size, y);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // 4. Glassmorphic Outer Card Container
+  const margin = 44;
+  const cardSize = size - margin * 2;
+  const borderRadius = 40;
+
+  // Card Outer Neon Halo Glow
+  ctx.save();
+  ctx.shadowColor = `${accentColor}50`;
+  ctx.shadowBlur = 35;
+  ctx.shadowOffsetY = 10;
+
+  // Card Glass Fill
+  ctx.fillStyle = 'rgba(12, 17, 28, 0.88)';
   ctx.beginPath();
   ctx.roundRect(margin, margin, cardSize, cardSize, borderRadius);
   ctx.fill();
+  ctx.restore();
 
-  // Glass Border with Gradient Accent
+  // Dual-Layer Glowing Border
+  ctx.save();
   const borderGrad = ctx.createLinearGradient(margin, margin, size - margin, size - margin);
-  borderGrad.addColorStop(0, `${accentColor}CC`);
-  borderGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.2)');
-  borderGrad.addColorStop(1, `${accentColor}40`);
+  borderGrad.addColorStop(0, accentColor);
+  borderGrad.addColorStop(0.5, '#FFFFFF');
+  borderGrad.addColorStop(1, '#9945FF');
 
   ctx.strokeStyle = borderGrad;
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.roundRect(margin, margin, cardSize, cardSize, borderRadius);
   ctx.stroke();
   ctx.restore();
 
-  // 4. Clean Header Row
+  // 5. Header Row
   const headerY = margin + 50;
 
-  // Left Header Brand Pill: "☀️ GM GENERATOR"
+  // Brand Logo Pill (Top Left)
   ctx.save();
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.roundRect(margin + 40, headerY, 230, 44, 22);
+  ctx.roundRect(margin + 36, headerY, 240, 48, 24);
   ctx.fill();
   ctx.stroke();
 
-  ctx.fillStyle = '#F3BA2F';
-  ctx.font = 'bold 20px sans-serif';
-  ctx.fillText('☀️', margin + 56, headerY + 28);
+  ctx.fillStyle = '#F59E0B';
+  ctx.font = '900 22px sans-serif';
+  ctx.fillText('☀️', margin + 54, headerY + 31);
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 16px sans-serif';
-  ctx.fillText('GM GENERATOR', margin + 86, headerY + 28);
+  ctx.font = '900 17px "Trebuchet MS", "Arial Black", sans-serif';
+  ctx.fillText('GM GENERATOR', margin + 86, headerY + 31);
   ctx.restore();
 
-  // Right Header Category Pill: "🔥 MOTIVATIONAL"
+  // Category Tag Pill (Top Right)
   ctx.save();
-  ctx.font = 'bold 16px monospace';
+  ctx.font = 'bold 16px "Trebuchet MS", monospace';
   const pillText = `${categoryIcon} ${categoryName}`;
-  const pillWidth = ctx.measureText(pillText).width + 36;
-  const pillX = size - margin - 40 - pillWidth;
+  const pillWidth = ctx.measureText(pillText).width + 40;
+  const pillX = size - margin - 36 - pillWidth;
 
-  ctx.fillStyle = `${accentColor}20`;
+  ctx.fillStyle = `${accentColor}25`;
   ctx.strokeStyle = accentColor;
-  ctx.lineWidth = 1.5;
+  ctx.lineWidth = 1.8;
   ctx.beginPath();
-  ctx.roundRect(pillX, headerY, pillWidth, 44, 22);
+  ctx.roundRect(pillX, headerY, pillWidth, 48, 24);
   ctx.fill();
   ctx.stroke();
 
   ctx.fillStyle = accentColor;
-  ctx.fillText(pillText, pillX + 18, headerY + 28);
+  ctx.fillText(pillText, pillX + 20, headerY + 31);
   ctx.restore();
 
-  // 5. Main Hero Centered Quote Text Block
+  // 6. MASSIVE Hero Typography (Quotes)
   const cleanQuote = quoteText.replace(/^["“]|["”]$/g, '').trim();
-  const fullQuote = `“${cleanQuote}”`;
 
-  // Dynamic Typography Scaling to maximize space & readability
-  let fontSize = 54;
-  let lineHeight = 72;
+  // Huge Adaptive Font Size Logic
+  let fontSize = 72;
+  let lineHeight = 92;
 
-  if (cleanQuote.length > 150) {
-    fontSize = 38;
-    lineHeight = 54;
-  } else if (cleanQuote.length > 100) {
-    fontSize = 44;
-    lineHeight = 62;
-  } else if (cleanQuote.length > 60) {
+  if (cleanQuote.length > 130) {
     fontSize = 48;
     lineHeight = 66;
+  } else if (cleanQuote.length > 80) {
+    fontSize = 58;
+    lineHeight = 78;
+  } else if (cleanQuote.length > 45) {
+    fontSize = 66;
+    lineHeight = 86;
   }
 
-  ctx.font = `900 ${fontSize}px sans-serif`;
+  const fontStack = `900 ${fontSize}px "Trebuchet MS", "Arial Black", "Impact", sans-serif`;
+  ctx.font = fontStack;
   ctx.textAlign = 'center';
-  ctx.fillStyle = '#FFFFFF';
 
-  const maxTextWidth = cardSize - 120; // Utilizes full width with comfortable margins
-  const words = fullQuote.split(' ');
+  const maxTextWidth = cardSize - 100; // Uses maximum card width
+  const words = cleanQuote.split(' ');
   const lines = [];
   let currentLine = '';
 
@@ -139,42 +172,70 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   }
   if (currentLine) lines.push(currentLine);
 
-  // Perfect Vertical Centering for Quote Block
+  // Big Watermark Quote Marks (" “ ") in background of text
+  ctx.save();
+  ctx.fillStyle = `${accentColor}12`;
+  ctx.font = '900 180px Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('“', size / 2, size / 2 - 40);
+  ctx.restore();
+
+  // Draw Massive Hero Text Lines with Shadow Glow
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+  ctx.shadowBlur = 25;
+  ctx.shadowOffsetY = 8;
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = fontStack;
+
   const totalTextHeight = lines.length * lineHeight;
-  const textAreaTop = margin + 110;
-  const textAreaBottom = size - margin - 110;
-  const textAreaCenterY = (textAreaTop + textAreaBottom) / 2;
-  let startY = textAreaCenterY - (totalTextHeight / 2) + (fontSize * 0.75);
+  const textAreaCenterY = size / 2 + 15;
+  let startY = textAreaCenterY - (totalTextHeight / 2) + (fontSize * 0.7);
 
   for (let j = 0; j < lines.length; j++) {
-    ctx.fillText(lines[j], size / 2, startY + (j * lineHeight));
-  }
+    let lineStr = lines[j];
+    if (lines.length === 1) {
+      lineStr = `“${lineStr}”`;
+    } else if (j === 0) {
+      lineStr = `“${lineStr}`;
+    } else if (j === lines.length - 1) {
+      lineStr = `${lineStr}”`;
+    }
 
-  // 6. Clean Divider Line
+    ctx.fillText(lineStr, size / 2, startY + (j * lineHeight));
+  }
+  ctx.restore();
+
+  // 7. Glowing Accent Footer Divider
   const footerLineY = size - margin - 85;
   ctx.save();
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-  ctx.lineWidth = 1;
+  const lineGrad = ctx.createLinearGradient(margin + 40, 0, size - margin - 40, 0);
+  lineGrad.addColorStop(0, accentColor);
+  lineGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.3)');
+  lineGrad.addColorStop(1, '#9945FF');
+
+  ctx.strokeStyle = lineGrad;
+  ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(margin + 40, footerLineY);
   ctx.lineTo(size - margin - 40, footerLineY);
   ctx.stroke();
   ctx.restore();
 
-  // 7. Standard Footer Bar (Clean, uncluttered, left/right aligned)
-  const footerY = size - margin - 42;
+  // 8. Aesthetic Footer Bar
+  const footerY = size - margin - 40;
 
-  // Left Footer: @generategmbot
+  // Left Footer Brand Tag
   ctx.textAlign = 'left';
   ctx.fillStyle = '#94A3B8';
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('GM GENERATOR  •  @generategmbot', margin + 40, footerY);
+  ctx.font = '900 16px "Trebuchet MS", monospace';
+  ctx.fillText('⚡ GM GENERATOR  •  @generategmbot', margin + 40, footerY);
 
-  // Right Footer: t.me/generategmbot/app
+  // Right Footer Mini App Link
   ctx.textAlign = 'right';
   ctx.fillStyle = accentColor;
-  ctx.font = 'bold 16px monospace';
-  ctx.fillText('t.me/generategmbot/app', size - margin - 40, footerY);
+  ctx.font = '900 16px "Trebuchet MS", monospace';
+  ctx.fillText('t.me/generategmbot/app 🚀', size - margin - 40, footerY);
 
   return canvas.toBuffer('image/png');
 }
