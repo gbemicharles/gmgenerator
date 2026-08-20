@@ -1,97 +1,179 @@
-import { createCanvas } from '@napi-rs/canvas';
+import { createCanvas, loadImage } from '@napi-rs/canvas';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const PEDRO_MASCOT_FILES = [
+  'pedro_king.png',
+  'pedro_astronaut.png',
+  'pedro_dj.png',
+  'pedro_diamond.png',
+  'pedro_rocket.png',
+  'pedro_rockstar.png',
+  'pedro_wizard.png',
+  'pedro_copium.png',
+  'pedro_rekt.png'
+];
 
 /**
- * Dynamically renders an exact 1:1 1000x1000 Square GM Card Image 
- * matching the user's exact uploaded design example.
+ * Dynamically renders an ULTRA-PREMIUM 1000x1000 Square GM Photo Card
+ * matching modern Web3 aesthetic with glassmorphism, dynamic Pedro mascot art,
+ * glowing neon accents, and adaptive typography scaling.
  * 
- * @param {string} quoteText - e.g. "GM. Watching green candles while the rest of the house sleeps peacefully."
+ * @param {string} quoteText - The GM quote string
  * @param {object} categoryObj - { name: '3AM GM', icon: '🌙', color: '#38BDF8' }
  * @returns {Promise<Buffer>} PNG Image Buffer
  */
-export async function renderGMCardImage(quoteText, categoryObj = { name: '3AM GM', icon: '🌙', color: '#38BDF8' }) {
+export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVATIONAL', icon: '🔥', color: '#F3BA2F' }) {
   const size = 1000;
   const canvas = createCanvas(size, size);
   const ctx = canvas.getContext('2d');
 
-  const borderColor = categoryObj.color || '#38BDF8';
+  const accentColor = categoryObj.color || '#F3BA2F';
   const categoryIcon = categoryObj.icon || '☀️';
   const categoryName = (categoryObj.name || 'DAILY GM').toUpperCase();
 
-  // 1. Dark Midnight Blue Gradient Background
+  // 1. Deep Midnight Web3 Background Gradient
   const bgGrad = ctx.createLinearGradient(0, 0, size, size);
-  bgGrad.addColorStop(0, '#0B1528');
-  bgGrad.addColorStop(0.5, '#070D1A');
-  bgGrad.addColorStop(1, '#03060C');
+  bgGrad.addColorStop(0, '#0B0F19');
+  bgGrad.addColorStop(0.4, '#111827');
+  bgGrad.addColorStop(0.8, '#080C14');
+  bgGrad.addColorStop(1, '#030509');
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, size, size);
 
-  // 2. Ambient Radial Background Glow
+  // 2. Multi-layered Neon Ambient Radial Glows
   ctx.save();
-  ctx.fillStyle = 'rgba(56, 189, 248, 0.08)';
-  ctx.beginPath();
-  ctx.arc(500, 500, 450, 0, Math.PI * 2);
-  ctx.fill();
+  // Primary category accent glow (top-left)
+  const glow1 = ctx.createRadialGradient(250, 200, 10, 250, 200, 450);
+  glow1.addColorStop(0, `${accentColor}33`);
+  glow1.addColorStop(1, 'transparent');
+  ctx.fillStyle = glow1;
+  ctx.fillRect(0, 0, size, size);
+
+  // Secondary purple/gold glow (bottom-right)
+  const glow2 = ctx.createRadialGradient(800, 800, 10, 800, 800, 500);
+  glow2.addColorStop(0, 'rgba(153, 69, 255, 0.2)');
+  glow2.addColorStop(1, 'transparent');
+  ctx.fillStyle = glow2;
+  ctx.fillRect(0, 0, size, size);
   ctx.restore();
 
-  // 3. Rounded Card Outer Frame with Accent Glow Border
-  const margin = 35;
+  // 3. Glassmorphic Outer Card Container
+  const margin = 40;
   const cardSize = size - margin * 2;
-  const borderRadius = 32;
+  const borderRadius = 36;
 
   ctx.save();
-  ctx.fillStyle = 'rgba(11, 21, 40, 0.95)';
-  ctx.strokeStyle = borderColor;
-  ctx.lineWidth = 4;
+  // Card Shadow
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+  ctx.shadowBlur = 40;
+  ctx.shadowOffsetY = 20;
 
+  // Glass Card Background Fill
+  ctx.fillStyle = 'rgba(17, 24, 39, 0.85)';
   ctx.beginPath();
   ctx.roundRect(margin, margin, cardSize, cardSize, borderRadius);
   ctx.fill();
+  ctx.restore();
+
+  // Glass Border with Accent Gradient
+  ctx.save();
+  const borderGrad = ctx.createLinearGradient(margin, margin, size - margin, size - margin);
+  borderGrad.addColorStop(0, accentColor);
+  borderGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.25)');
+  borderGrad.addColorStop(1, '#9945FF');
+
+  ctx.strokeStyle = borderGrad;
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.roundRect(margin, margin, cardSize, cardSize, borderRadius);
   ctx.stroke();
   ctx.restore();
 
-  // 4. Header Row
-  const headerY = margin + 75;
+  // 4. Header Bar
+  const headerY = margin + 65;
 
-  // Left side: ☀️ GM
+  // Sun Icon & Brand Title
+  ctx.fillStyle = '#F3BA2F';
+  ctx.font = '900 42px sans-serif';
+  ctx.fillText('☀️', margin + 45, headerY);
+
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = '900 48px sans-serif';
-  ctx.fillText('☀️  GM', margin + 50, headerY);
+  ctx.font = '900 36px sans-serif';
+  ctx.fillText('GM GENERATOR', margin + 105, headerY - 5);
 
-  // Right side: Category Badge Pill (e.g. 🌙 3AM GM)
-  ctx.font = 'bold 22px monospace';
+  // Category Tag Pill (Top Right)
+  ctx.font = 'bold 18px monospace';
   const pillText = `${categoryIcon} ${categoryName}`;
-  const pillWidth = ctx.measureText(pillText).width + 44;
-  const pillHeight = 48;
-  const pillX = size - margin - 50 - pillWidth;
-  const pillY = margin + 45;
+  const pillWidth = ctx.measureText(pillText).width + 40;
+  const pillHeight = 44;
+  const pillX = size - margin - 45 - pillWidth;
+  const pillY = margin + 36;
 
   ctx.save();
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+  ctx.fillStyle = `${accentColor}20`;
+  ctx.strokeStyle = `${accentColor}80`;
   ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 24);
+  ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 22);
   ctx.fill();
   ctx.stroke();
 
-  ctx.fillStyle = '#CBD5E1';
-  ctx.fillText(pillText, pillX + 22, pillY + 32);
+  ctx.fillStyle = accentColor;
+  ctx.fillText(pillText, pillX + 20, pillY + 28);
   ctx.restore();
 
-  // 5. Center Centered Quote Text
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = '900 46px sans-serif';
-  ctx.textAlign = 'center';
+  // 5. Draw Pedro Mascot Artwork Integration (Right Side Watermark Art)
+  try {
+    const randomPedroFile = PEDRO_MASCOT_FILES[Math.floor(Math.random() * PEDRO_MASCOT_FILES.length)];
+    const localImgPath = path.join(__dirname, '..', 'public', 'pedro_characters', randomPedroFile);
 
-  const maxTextWidth = 780;
-  const centerX = size / 2;
+    if (fs.existsSync(localImgPath)) {
+      const pedroImg = await loadImage(localImgPath);
+      const imgSize = 280;
+      const imgX = size - margin - 310;
+      const imgY = size - margin - 350;
 
-  // Clean quote text
+      ctx.save();
+      ctx.globalAlpha = 0.85;
+      ctx.drawImage(pedroImg, imgX, imgY, imgSize, imgSize);
+      ctx.restore();
+    }
+  } catch (err) {
+    console.warn('Pedro mascot load warning:', err.message);
+  }
+
+  // 6. Watermark Large Quotes (" “ ")
+  ctx.save();
+  ctx.fillStyle = `${accentColor}15`;
+  ctx.font = '900 240px Georgia, serif';
+  ctx.fillText('“', margin + 30, margin + 250);
+  ctx.restore();
+
+  // 7. Adaptive Main Quote Text Box (Left-Aligned Centered Vertical Block)
   const cleanQuote = quoteText.replace(/^["“]|["”]$/g, '').trim();
-  const formattedQuote = `“${cleanQuote}”`;
+  
+  // Calculate dynamic font size based on text length
+  let fontSize = 42;
+  let lineHeight = 58;
+  if (cleanQuote.length > 120) {
+    fontSize = 32;
+    lineHeight = 46;
+  } else if (cleanQuote.length > 80) {
+    fontSize = 36;
+    lineHeight = 52;
+  }
 
-  // Calculate word wrapping
-  const words = formattedQuote.split(' ');
+  ctx.font = `bold ${fontSize}px sans-serif`;
+  ctx.fillStyle = '#F8FAFC';
+
+  const maxTextWidth = 580; // Leaves space for Pedro mascot art on right
+  const startX = margin + 55;
+  const words = cleanQuote.split(' ');
   const lines = [];
   let currentLine = '';
 
@@ -105,34 +187,49 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: '3AM GM
       currentLine = testLine;
     }
   }
-  if (currentLine) {
-    lines.push(currentLine);
-  }
+  if (currentLine) lines.push(currentLine);
 
-  // Draw centered text lines
-  const lineHeight = 66;
+  // Vertical Centering for Quote Block
   const totalTextHeight = lines.length * lineHeight;
-  let startY = (size / 2) - (totalTextHeight / 2) + 35;
+  let textStartY = (size / 2) - (totalTextHeight / 2) + 20;
 
   for (let j = 0; j < lines.length; j++) {
-    ctx.fillText(lines[j], centerX, startY + (j * lineHeight));
+    const isFirst = j === 0;
+    const isLast = j === lines.length - 1;
+    let lineStr = lines[j];
+
+    if (lines.length === 1) {
+      lineStr = `“${lineStr}”`;
+    } else if (isFirst) {
+      lineStr = `“${lineStr}`;
+    } else if (isLast) {
+      lineStr = `${lineStr}”`;
+    }
+
+    ctx.fillText(lineStr, startX, textStartY + (j * lineHeight));
   }
 
-  // 6. Horizontal Thin Divider Line above footer
-  const footerLineY = size - margin - 120;
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(margin + 50, footerLineY);
-  ctx.lineTo(size - margin - 50, footerLineY);
-  ctx.stroke();
+  // 8. Divider Line with Glow Accent
+  const footerLineY = size - margin - 90;
+  ctx.save();
+  const lineGrad = ctx.createLinearGradient(margin + 50, 0, size - margin - 50, 0);
+  lineGrad.addColorStop(0, `${accentColor}80`);
+  lineGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.2)');
+  lineGrad.addColorStop(1, 'transparent');
 
-  // 7. Footer Watermark Row
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#64748B';
-  ctx.font = 'bold 20px monospace';
-  const footerText = '✨  GM GENERATOR   •   @generategmbot   •   POWERED BY PEDRO TEAM 🦝';
-  ctx.fillText(footerText, margin + 50, size - margin - 60);
+  ctx.strokeStyle = lineGrad;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(margin + 45, footerLineY);
+  ctx.lineTo(size - margin - 45, footerLineY);
+  ctx.stroke();
+  ctx.restore();
+
+  // 9. Footer Metadata Row
+  ctx.fillStyle = '#94A3B8';
+  ctx.font = 'bold 18px monospace';
+  const footerText = '✨ GM GENERATOR  •  @generategmbot  •  POWERED BY PEDRO TEAM 🦝';
+  ctx.fillText(footerText, margin + 45, size - margin - 45);
 
   return canvas.toBuffer('image/png');
 }
