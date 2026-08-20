@@ -1,6 +1,6 @@
 /**
  * GM Generator - Comprehensive Content Library & Procedural Engine
- * Feature-rich Web3 quote generator with deduplication, TON meme lore, 
+ * Feature-rich Web3 quote generator with strict deduplication, TON meme lore, 
  * Pedro character integrations, and 22 full categories.
  */
 
@@ -216,7 +216,20 @@ export const STATIC_TEMPLATES = {
   ]
 };
 
-export function getRandomGM(category = 'all', excludeQuote = null) {
+// Global zero-repetition memory engine
+const seenHistorySet = new Set();
+const maxHistorySize = 50;
+
+function rememberQuote(q) {
+  if (!q) return;
+  seenHistorySet.add(q);
+  if (seenHistorySet.size > maxHistorySize) {
+    const firstItem = seenHistorySet.values().next().value;
+    seenHistorySet.delete(firstItem);
+  }
+}
+
+export function getRandomGM(category = 'all', excludeHistory = []) {
   let availableCategories = Object.keys(STATIC_TEMPLATES);
   if (category !== 'all' && STATIC_TEMPLATES[category]) {
     availableCategories = [category];
@@ -225,18 +238,17 @@ export function getRandomGM(category = 'all', excludeQuote = null) {
   const randomCategoryKey = availableCategories[Math.floor(Math.random() * availableCategories.length)];
   const quotesList = STATIC_TEMPLATES[randomCategoryKey];
 
-  let quote = quotesList[Math.floor(Math.random() * quotesList.length)];
-  if (excludeQuote && quotesList.length > 1) {
-    let attempts = 0;
-    while (quote === excludeQuote && attempts < 10) {
-      quote = quotesList[Math.floor(Math.random() * quotesList.length)];
-      attempts++;
-    }
-  }
+  const historyArray = Array.isArray(excludeHistory) ? excludeHistory : [excludeHistory];
+  const freshQuotes = quotesList.filter(q => !seenHistorySet.has(q) && !historyArray.includes(q));
+
+  const pool = freshQuotes.length > 0 ? freshQuotes : quotesList;
+  const chosenQuote = pool[Math.floor(Math.random() * pool.length)];
+
+  rememberQuote(chosenQuote);
 
   const categoryObj = CATEGORIES.find(c => c.id === randomCategoryKey) || CATEGORIES[0];
   return {
-    quote,
+    quote: chosenQuote,
     category: categoryObj.name,
     categoryId: categoryObj.id,
     color: categoryObj.color,
@@ -244,43 +256,79 @@ export function getRandomGM(category = 'all', excludeQuote = null) {
   };
 }
 
-export function generateTokenGM(token) {
+export function generateTokenGM(token, excludeHistory = []) {
+  if (!token) {
+    const list = STATIC_TEMPLATES.meme_tokens || [
+      "GM to all TON meme token holders! Stacking gems on Telegram daily! 💎🪙"
+    ];
+    const pool = list.filter(q => !seenHistorySet.has(q));
+    const q = (pool.length > 0 ? pool : list)[Math.floor(Math.random() * (pool.length || list.length))];
+    rememberQuote(q);
+    return {
+      quote: q,
+      category: 'MEME TOKENS',
+      categoryId: 'meme_tokens',
+      color: '#10B981',
+      icon: '🪙'
+    };
+  }
+
+  const rawSymbol = typeof token === 'string' ? token : (token.symbol || token.ticker || token.name || 'REDO');
+  const symbol = rawSymbol.replace('$', '').toUpperCase();
+  const tokenName = typeof token === 'object' && token.name ? token.name : symbol;
+
   const tokenQuotes = {
     REDO: [
       "GM Resistance Dog $REDO army! Standing firm for privacy & decentralization on Telegram & TON! 🐶🛡️",
-      "GM $REDO holders! The mascot of digital resistance leading the TON meme surge! 🐶⚡"
+      "GM $REDO holders! The mascot of digital resistance leading the TON meme surge! 🐶⚡",
+      "GM $REDO! Diamond paws holding strong against market noise! 🐶🚀",
+      "GM to the $REDO community! Resistance Dog leading the digital freedom movement! 🐶💎"
     ],
     PEDRO: [
       "GM $PEDRO squad! The ultimate audio memecoin on TON spinning nonstop vibes! 🦝🎶",
-      "GM $PEDRO holders! Pedro Team audio memecoin culture cooking maximum energy! 🦝🔥"
+      "GM $PEDRO holders! Pedro Team audio memecoin culture cooking maximum energy! 🦝🔥",
+      "GM $PEDRO! Pedro raccoon spinning round and round bringing maximum green candles! 🦝💎",
+      "GM Pedro team! Spinning audio memecoin tracks to the top of TON trending! 🦝⚡"
     ],
     UTYA: [
       "GM $UTYA duck army! Quacking our way straight to the top of Telegram DEXs! 🦆💎",
-      "GM $UTYA holders! TON duck memes flying high with unstoppable community power! 🦆⚡"
+      "GM $UTYA holders! TON duck memes flying high with unstoppable community power! 🦆⚡",
+      "GM $UTYA! Quack quack degens! Stacking ducks on TON blockchain! 🦆🚀",
+      "GM $UTYA squad! The most iconic duck memecoin on Telegram! 🦆🔥"
     ],
     BUDDY: [
       "GM $BUDDY holders! Best friends in crypto building the ultimate TON meme vibe! 🐾✨",
-      "GM $BUDDY squad! Loyalty, memes, and green candles all day long! 🐾🚀"
+      "GM $BUDDY squad! Loyalty, memes, and green candles all day long! 🐾🚀",
+      "GM $BUDDY! Stacking best friend tokens on TON blockchain! 🐾💎"
     ],
     CHERRY: [
       "GM $CHERRY holders! Sweetest meme token on TON picking green candles daily! 🍒🔥",
-      "GM $CHERRY community! Fresh vibes, high volume, maximum momentum! 🍒💎"
+      "GM $CHERRY community! Fresh vibes, high volume, maximum momentum! 🍒💎",
+      "GM $CHERRY! Sweet green candles popping all over Telegram DEXs! 🍒⚡"
     ],
     GROYP: [
       "GM $GROYP army! Memes speak louder than words in crypto markets! 🎭⚡",
-      "GM $GROYP holders! Unhinged meme power taking over Telegram! 🎭🚀"
+      "GM $GROYP holders! Unhinged meme power taking over Telegram! 🎭🚀",
+      "GM $GROYP! Pure meme conviction driving volume to ATH! 🎭💎"
     ]
   };
 
-  const symbol = token.symbol.toUpperCase();
   const list = tokenQuotes[symbol] || [
-    `GM $${symbol} holders! Stacking ${token.name} tokens before the next massive wave! 🪙🚀`
+    `GM $${symbol} holders! Stacking ${tokenName} tokens before the next massive wave! 🪙🚀`,
+    `GM to the $${symbol} community! Volume rising, conviction high! 🪙⚡`,
+    `GM $${symbol}! Diamond hands holding firm on TON blockchain! 🪙💎`,
+    `GM $${symbol} degens! Telegram wallets loaded, chart breaking resistance! 🪙🔥`
   ];
 
-  const quote = list[Math.floor(Math.random() * list.length)];
+  const historyArray = Array.isArray(excludeHistory) ? excludeHistory : [excludeHistory];
+  const pool = list.filter(q => !seenHistorySet.has(q) && !historyArray.includes(q));
+  const chosenQuote = (pool.length > 0 ? pool : list)[Math.floor(Math.random() * (pool.length || list.length))];
+
+  rememberQuote(chosenQuote);
+
   return {
-    quote,
-    category: `${token.symbol} COMMUNITY`,
+    quote: chosenQuote,
+    category: `$${symbol} COMMUNITY`,
     categoryId: 'meme_tokens',
     color: '#10B981',
     icon: '🪙'
