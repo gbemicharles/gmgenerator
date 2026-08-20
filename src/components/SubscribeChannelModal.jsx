@@ -39,7 +39,7 @@ export default function SubscribeChannelModal({ isOpen, onClose, onConfirmSubscr
     }
 
     try {
-      const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+      const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || import.meta.env.TELEGRAM_BOT_TOKEN;
       let isSubscribed = false;
       let checkSuccess = false;
 
