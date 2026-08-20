@@ -1,12 +1,12 @@
 import { createCanvas } from '@napi-rs/canvas';
 
 /**
- * Ultra-Aesthetic Web3 GM Photo Card Image Generator.
- * Features massive hero typography, vibrant aura mesh gradients, 
- * glassmorphic neon borders, and state-of-the-art social card aesthetics.
+ * Ultra-Sleek, High-Legibility Web3 GM Photo Card Image Generator.
+ * Features ultra-clear headers, prominent category badges, highly visible footers,
+ * and massive hero typography designed for 100% readability on mobile screens.
  * 
  * @param {string} quoteText - GM quote string
- * @param {object} categoryObj - { name: 'MOTIVATIONAL', icon: '🔥', color: '#F3BA2F' }
+ * @param {object} categoryObj - { name: 'MOTIVATIONAL', icon: '🔥', color: '#F59E0B' }
  * @returns {Promise<Buffer>} PNG Image Buffer
  */
 export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVATIONAL', icon: '🔥', color: '#F59E0B' }) {
@@ -18,33 +18,33 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   const categoryIcon = categoryObj.icon || '☀️';
   const categoryName = (categoryObj.name || 'DAILY GM').toUpperCase();
 
-  // 1. Deep Obsidian Base
-  ctx.fillStyle = '#05070E';
+  // 1. Deep Obsidian Base Background
+  ctx.fillStyle = '#060812';
   ctx.fillRect(0, 0, size, size);
 
-  // 2. Vibrant Mesh Aura Gradients
+  // 2. Vibrant Dual Cosmic Aura Mesh Glows
   ctx.save();
-  // Top-Left Category Neon Glow
-  const aura1 = ctx.createRadialGradient(220, 200, 20, 220, 200, 520);
-  aura1.addColorStop(0, `${accentColor}44`);
-  aura1.addColorStop(0.5, `${accentColor}18`);
+  // Top-Left Neon Category Aura
+  const aura1 = ctx.createRadialGradient(240, 220, 30, 240, 220, 560);
+  aura1.addColorStop(0, `${accentColor}50`);
+  aura1.addColorStop(0.5, `${accentColor}20`);
   aura1.addColorStop(1, 'transparent');
   ctx.fillStyle = aura1;
   ctx.fillRect(0, 0, size, size);
 
-  // Bottom-Right Purple/Cyan Cosmic Aura
-  const aura2 = ctx.createRadialGradient(860, 860, 20, 860, 860, 560);
-  aura2.addColorStop(0, 'rgba(153, 69, 255, 0.30)');
-  aura2.addColorStop(0.6, 'rgba(56, 189, 248, 0.12)');
+  // Bottom-Right Cyan/Purple Aura
+  const aura2 = ctx.createRadialGradient(840, 840, 30, 840, 840, 580);
+  aura2.addColorStop(0, 'rgba(56, 189, 248, 0.35)');
+  aura2.addColorStop(0.5, 'rgba(153, 69, 255, 0.20)');
   aura2.addColorStop(1, 'transparent');
   ctx.fillStyle = aura2;
   ctx.fillRect(0, 0, size, size);
   ctx.restore();
 
-  // 3. Subtle Cyber Grid Texture
+  // 3. Cyber Tech Grid Overlay
   ctx.save();
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+  ctx.lineWidth = 1.5;
   const gridSize = 60;
   for (let x = 0; x < size; x += gridSize) {
     ctx.beginPath();
@@ -60,83 +60,88 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   }
   ctx.restore();
 
-  // 4. Glassmorphic Outer Card Container
-  const margin = 44;
+  // 4. Glassmorphic Main Card Container
+  const margin = 42;
   const cardSize = size - margin * 2;
   const borderRadius = 40;
 
-  // Card Outer Neon Halo Glow
+  // Outer Neon Glow Shadow
   ctx.save();
-  ctx.shadowColor = `${accentColor}50`;
-  ctx.shadowBlur = 35;
-  ctx.shadowOffsetY = 10;
+  ctx.shadowColor = `${accentColor}60`;
+  ctx.shadowBlur = 40;
+  ctx.shadowOffsetY = 12;
 
-  // Card Glass Fill
-  ctx.fillStyle = 'rgba(12, 17, 28, 0.88)';
+  // Glass Card Fill
+  ctx.fillStyle = 'rgba(13, 19, 32, 0.92)';
   ctx.beginPath();
   ctx.roundRect(margin, margin, cardSize, cardSize, borderRadius);
   ctx.fill();
   ctx.restore();
 
-  // Dual-Layer Glowing Border
+  // Dual Neon Gradient Border
   ctx.save();
   const borderGrad = ctx.createLinearGradient(margin, margin, size - margin, size - margin);
   borderGrad.addColorStop(0, accentColor);
   borderGrad.addColorStop(0.5, '#FFFFFF');
-  borderGrad.addColorStop(1, '#9945FF');
+  borderGrad.addColorStop(1, '#38BDF8');
 
   ctx.strokeStyle = borderGrad;
-  ctx.lineWidth = 3.5;
+  ctx.lineWidth = 4;
   ctx.beginPath();
   ctx.roundRect(margin, margin, cardSize, cardSize, borderRadius);
   ctx.stroke();
   ctx.restore();
 
-  // 5. Header Row
-  const headerY = margin + 50;
+  // 5. Highly Visible Top Header Row
+  const headerY = margin + 45;
+  const headerHeight = 56;
 
-  // Brand Logo Pill (Top Left)
+  // Left Brand Logo Pill ("☀️ GM GENERATOR")
   ctx.save();
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
-  ctx.lineWidth = 1.5;
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.09)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.roundRect(margin + 36, headerY, 240, 48, 24);
+  ctx.roundRect(margin + 36, headerY, 280, headerHeight, 28);
   ctx.fill();
   ctx.stroke();
 
+  // Sun Icon
   ctx.fillStyle = '#F59E0B';
-  ctx.font = '900 22px sans-serif';
-  ctx.fillText('☀️', margin + 54, headerY + 31);
+  ctx.font = 'bold 28px sans-serif';
+  ctx.fillText('☀️', margin + 54, headerY + 38);
 
+  // Title Text (Bright White & Clear)
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = '900 17px "Trebuchet MS", "Arial Black", sans-serif';
-  ctx.fillText('GM GENERATOR', margin + 86, headerY + 31);
+  ctx.font = 'bold 21px "Trebuchet MS", "Arial Black", sans-serif';
+  ctx.fillText('GM GENERATOR', margin + 96, headerY + 37);
   ctx.restore();
 
-  // Category Tag Pill (Top Right)
+  // Right Category Tag Pill ("🔥 MOTIVATIONAL")
   ctx.save();
-  ctx.font = 'bold 16px "Trebuchet MS", monospace';
+  ctx.font = 'bold 20px "Trebuchet MS", monospace';
   const pillText = `${categoryIcon} ${categoryName}`;
-  const pillWidth = ctx.measureText(pillText).width + 40;
+  const pillWidth = ctx.measureText(pillText).width + 48;
   const pillX = size - margin - 36 - pillWidth;
 
-  ctx.fillStyle = `${accentColor}25`;
+  ctx.fillStyle = `${accentColor}35`;
   ctx.strokeStyle = accentColor;
-  ctx.lineWidth = 1.8;
+  ctx.lineWidth = 2.5;
   ctx.beginPath();
-  ctx.roundRect(pillX, headerY, pillWidth, 48, 24);
+  ctx.roundRect(pillX, headerY, pillWidth, headerHeight, 28);
   ctx.fill();
   ctx.stroke();
 
-  ctx.fillStyle = accentColor;
-  ctx.fillText(pillText, pillX + 20, headerY + 31);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.shadowColor = accentColor;
+  ctx.shadowBlur = 10;
+  ctx.fillText(pillText, pillX + 24, headerY + 37);
   ctx.restore();
 
   // 6. MASSIVE Hero Typography (Quotes)
   const cleanQuote = quoteText.replace(/^["“]|["”]$/g, '').trim();
 
-  // Huge Adaptive Font Size Logic
+  // Dynamic Font Size Scaling
   let fontSize = 72;
   let lineHeight = 92;
 
@@ -155,7 +160,7 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   ctx.font = fontStack;
   ctx.textAlign = 'center';
 
-  const maxTextWidth = cardSize - 100; // Uses maximum card width
+  const maxTextWidth = cardSize - 90;
   const words = cleanQuote.split(' ');
   const lines = [];
   let currentLine = '';
@@ -172,19 +177,19 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   }
   if (currentLine) lines.push(currentLine);
 
-  // Big Watermark Quote Marks (" “ ") in background of text
+  // Background Quotation Mark Watermark (" “ ")
   ctx.save();
-  ctx.fillStyle = `${accentColor}12`;
-  ctx.font = '900 180px Georgia, serif';
+  ctx.fillStyle = `${accentColor}18`;
+  ctx.font = '900 200px Georgia, serif';
   ctx.textAlign = 'center';
-  ctx.fillText('“', size / 2, size / 2 - 40);
+  ctx.fillText('“', size / 2, size / 2 - 35);
   ctx.restore();
 
-  // Draw Massive Hero Text Lines with Shadow Glow
+  // Draw Hero Text Lines with Crisp Drop Shadow
   ctx.save();
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-  ctx.shadowBlur = 25;
-  ctx.shadowOffsetY = 8;
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+  ctx.shadowBlur = 20;
+  ctx.shadowOffsetY = 6;
   ctx.fillStyle = '#FFFFFF';
   ctx.font = fontStack;
 
@@ -207,35 +212,46 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   ctx.restore();
 
   // 7. Glowing Accent Footer Divider
-  const footerLineY = size - margin - 85;
+  const footerLineY = size - margin - 95;
   ctx.save();
-  const lineGrad = ctx.createLinearGradient(margin + 40, 0, size - margin - 40, 0);
+  const lineGrad = ctx.createLinearGradient(margin + 36, 0, size - margin - 36, 0);
   lineGrad.addColorStop(0, accentColor);
-  lineGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.3)');
-  lineGrad.addColorStop(1, '#9945FF');
+  lineGrad.addColorStop(0.5, '#FFFFFF');
+  lineGrad.addColorStop(1, '#38BDF8');
 
   ctx.strokeStyle = lineGrad;
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 2.5;
   ctx.beginPath();
-  ctx.moveTo(margin + 40, footerLineY);
-  ctx.lineTo(size - margin - 40, footerLineY);
+  ctx.moveTo(margin + 36, footerLineY);
+  ctx.lineTo(size - margin - 36, footerLineY);
   ctx.stroke();
   ctx.restore();
 
-  // 8. Aesthetic Footer Bar
-  const footerY = size - margin - 40;
+  // 8. HIGH-CONTRAST Glass Footer Bar (Crystal Clear Text on Mobile)
+  const footerBarY = size - margin - 80;
+  const footerBarHeight = 56;
 
-  // Left Footer Brand Tag
+  ctx.save();
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.roundRect(margin + 36, footerBarY, cardSize - 72, footerBarHeight, 16);
+  ctx.fill();
+  ctx.stroke();
+
+  // Left Footer Brand & Bot Tag
   ctx.textAlign = 'left';
-  ctx.fillStyle = '#94A3B8';
-  ctx.font = '900 16px "Trebuchet MS", monospace';
-  ctx.fillText('⚡ GM GENERATOR  •  @generategmbot', margin + 40, footerY);
+  ctx.fillStyle = '#E2E8F0';
+  ctx.font = 'bold 20px "Trebuchet MS", monospace';
+  ctx.fillText('⚡ GM GENERATOR  •  @generategmbot', margin + 56, footerBarY + 36);
 
-  // Right Footer Mini App Link
+  // Right Footer Link
   ctx.textAlign = 'right';
-  ctx.fillStyle = accentColor;
-  ctx.font = '900 16px "Trebuchet MS", monospace';
-  ctx.fillText('t.me/generategmbot/app 🚀', size - margin - 40, footerY);
+  ctx.fillStyle = '#38BDF8';
+  ctx.font = 'bold 20px "Trebuchet MS", monospace';
+  ctx.fillText('t.me/generategmbot/app 🚀', size - margin - 56, footerBarY + 36);
+  ctx.restore();
 
   return canvas.toBuffer('image/png');
 }
