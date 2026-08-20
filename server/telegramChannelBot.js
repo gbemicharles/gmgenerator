@@ -139,6 +139,70 @@ ${tmpl.footer}`;
   }
 }
 
+/**
+ * Long-polling Telegram Bot Command Listener
+ * Listens for /postgm, /gm, /broadcast, /dropgm commands in Telegram chat
+ */
+export function startTelegramBotListener() {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
+  if (!botToken) {
+    console.log('ℹ️ Telegram Bot Listener standby (TELEGRAM_BOT_TOKEN not set).');
+    return;
+  }
+
+  console.log('🤖 Telegram Bot Command Listener active! Send /postgm or /gm in Telegram chat to trigger.');
+  let offset = 0;
+
+  const pollUpdates = async () => {
+    try {
+      const url = `https://api.telegram.org/bot${botToken}/getUpdates?offset=${offset}&timeout=10`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.ok && Array.isArray(data.result)) {
+        for (const update of data.result) {
+          offset = update.update_id + 1;
+          const msg = update.message || update.channel_post;
+          if (!msg || !msg.text) continue;
+
+          const text = msg.text.trim();
+          if (text.startsWith('/postgm') || text.startsWith('/gm') || text.startsWith('/broadcast') || text.startsWith('/dropgm')) {
+            console.log(`📩 Command '${text}' received from chat ${msg.chat.id}`);
+
+            // Extract optional custom quote written after command
+            const customText = text.replace(/^\/(postgm|gm|broadcast|dropgm)(@\w+)?\s*/i, '').trim();
+            const result = await sendDailyChannelPost(customText || null);
+
+            // Send confirmation reply back to the sender
+            if (msg.chat && msg.chat.id) {
+              const replyUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+              const replyText = result.success
+                ? `✅ *GM Broadcast Sent to Channel!*\n\n*Message ID:* \`${result.messageId}\``
+                : `❌ *Broadcast Failed:* ${result.error}`;
+
+              await fetch(replyUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  chat_id: msg.chat.id,
+                  text: replyText,
+                  parse_mode: 'Markdown'
+                })
+              });
+            }
+          }
+        }
+      }
+    } catch (err) {
+      // Background poll retry
+    } finally {
+      setTimeout(pollUpdates, 2000);
+    }
+  };
+
+  pollUpdates();
+}
+
 // Execute immediately if executed directly via node CLI
 const isDirectRun = process.argv[1] && (
   process.argv[1].includes('telegramChannelBot.js') || 
