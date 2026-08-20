@@ -22,7 +22,6 @@ export async function sendDailyChannelPost(customText = null) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
   const channelId = process.env.TELEGRAM_CHANNEL_ID || process.env.TELEGRAM_CHANNEL_USERNAME || '@generategm';
   const webAppDirectUrl = process.env.WEBAPP_URL || process.env.VITE_APP_URL || 'https://gmgenerator-production.up.railway.app';
-  const tmeAppUrl = 'https://t.me/generategmbot/app';
 
   if (!botToken || botToken === 'YOUR_BOT_TOKEN_HERE') {
     return {
@@ -57,7 +56,7 @@ export async function sendDailyChannelPost(customText = null) {
 
 Generate your preferred daily GM post with @generategmbot`;
 
-  // Inline keyboard button
+  // Inline keyboard button with native web_app property
   const inlineKeyboard = {
     inline_keyboard: [
       [
@@ -149,7 +148,7 @@ export function startTelegramBotListener() {
     return;
   }
 
-  console.log('🤖 Telegram Bot Command Listener active! Send /start, /postgm or /gm in Telegram chat.');
+  console.log('🤖 Telegram Bot Command Listener active! Listening for /start, /postgm or /gm in Telegram chat.');
 
   // Set Telegram Native Bottom Left Menu Button to open Mini App
   try {
@@ -178,9 +177,10 @@ export function startTelegramBotListener() {
       const response = await fetch(url);
       const data = await response.json();
 
-      if (data.ok && Array.isArray(data.result)) {
+      if (data.ok && Array.isArray(data.result) && data.result.length > 0) {
         for (const update of data.result) {
           offset = Math.max(offset, update.update_id + 1);
+
           const msg = update.message || update.channel_post;
           if (!msg || !msg.text) continue;
 
@@ -220,7 +220,7 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
               ]
             };
 
-            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            const sendRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -230,6 +230,9 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
                 reply_markup: inlineKeyboard
               })
             });
+
+            const sendJson = await sendRes.json();
+            console.log(`✅ Sent /start response to chat ${msg.chat.id}:`, sendJson.ok);
             continue;
           }
 
@@ -260,24 +263,13 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
         }
       }
     } catch (err) {
-      // Retry loop
+      console.error('Error in polling loop:', err.message);
     } finally {
-      setTimeout(pollUpdates, 2000);
+      setTimeout(pollUpdates, 1500);
     }
   };
 
-  // Initialize offset to latest pending update so bot doesn't get stuck on old updates
-  fetch(`https://api.telegram.org/bot${botToken}/getUpdates?offset=-1`)
-    .then(r => r.json())
-    .then(d => {
-      if (d.ok && Array.isArray(d.result) && d.result.length > 0) {
-        offset = d.result[d.result.length - 1].update_id + 1;
-      }
-      pollUpdates();
-    })
-    .catch(() => {
-      pollUpdates();
-    });
+  pollUpdates();
 }
 
 /**
