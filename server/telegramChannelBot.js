@@ -1,108 +1,147 @@
 /**
- * Telegram Channel Daily GM Broadcast Bot Script for @generategmbot
- * Automatically generates a daily GM post with promo write-up and an "Open App" inline button.
+ * Telegram Daily Broadcast Bot Script for @generategmbot
+ * Posts high-energy TON / Gram ecosystem style GM messages to Telegram Channel or Group.
  * 
- * Setup Instructions:
- * 1. Set environment variables:
- *    export TELEGRAM_BOT_TOKEN="your_bot_token_from_botfather"
- *    export TELEGRAM_CHANNEL_ID="@your_channel_username" # e.g. @generategm_channel
- *    export TELEGRAM_MINI_APP_URL="https://t.me/generategmbot/app"
- * 
- * 2. Run manually:
- *    node server/telegramChannelBot.js
- * 
- * 3. Or schedule with cron (every morning at 8:00 AM):
- *    0 8 * * * node /path/to/server/telegramChannelBot.js
+ * Features:
+ * - TON / Gram memecoin templates ($REDO 🐕‍🦺, $PEDRO 🦝, $UTYA 🦆)
+ * - Inline Keyboard with "☀️ Open App" and "📢 Join Channel" buttons
+ * - Immediate test trigger endpoint & daily cron scheduler
  */
 
-import fetch from 'node-fetch';
-import { CATEGORIES, STATIC_TEMPLATES, generateTokenGM } from '../src/data/contentLibrary.js';
 import { PEDRO_CHARACTERS } from '../src/data/pedroCharacters.js';
 
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || 'YOUR_BOT_TOKEN_HERE';
-const CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID || '@generategm_channel';
-const MINI_APP_URL = process.env.TELEGRAM_MINI_APP_URL || 'https://t.me/generategmbot/app';
+const TON_GRAM_TEMPLATES = [
+  {
+    header: "☀️ *GRAM MORNING TON FAMILY!* ☀️",
+    body: "“GM to all TON memecoin holders! Resistance Dog $REDO 🐕‍🦺, Pedro 🦝, and Utya 🦆 cooking parabolic gains on Telegram!”",
+    footer: "🚀 *Generate your GM post today with @generategmbot!*\n💎 *Powered by Pedro Team*"
+  },
+  {
+    header: "💎 *GRAM MORNING MEMECOIN ARMY!* 💎",
+    body: "“Gram morning ser! Telegram ecosystem tokens printing parabolic green candles on TON! Holding $REDO 🐕‍🦺, $PEDRO 🦝, and $UTYA 🦆 with maximum gigachad conviction!”",
+    footer: "🚀 *Create your unhinged GM post now with @generategmbot!*"
+  },
+  {
+    header: "🦝 *PEDRO MASCOT DAILY GM DROP* 🦝",
+    body: "“GM to the TON believers! Hooded dog, trash bandit Pedro, and yellow duck taking over Web3! 100x vibes only!”",
+    footer: "🔥 *Generate custom Pedro GM cards on @generategmbot!*"
+  },
+  {
+    header: "⚡ *TELEGRAM SUPERCYCLE ACTIVATED* ⚡",
+    body: "“GM! 99% of my timeline is Telegram Mini Apps and TON memecoins cooking. We are so insanely early!”",
+    footer: "☀️ *Start your morning right with @generategmbot!*"
+  }
+];
 
-// Pick a random GM write-up
-function generateDailyBroadcast() {
-  const isPedro = Math.random() < 0.4;
+export async function sendDailyChannelPost(customText = null) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
+  const channelId = process.env.TELEGRAM_CHANNEL_ID || process.env.TELEGRAM_CHANNEL_USERNAME || '@generategm';
+  const miniAppUrl = process.env.TELEGRAM_MINI_APP_URL || 'https://t.me/generategmbot/app';
 
-  if (isPedro) {
-    const char = PEDRO_CHARACTERS[Math.floor(Math.random() * PEDRO_CHARACTERS.length)];
-    const quote = char.gms[Math.floor(Math.random() * char.gms.length)];
+  if (!botToken || botToken === 'YOUR_BOT_TOKEN_HERE') {
     return {
-      text: quote,
-      character: char,
-      type: 'pedro'
+      success: false,
+      error: 'TELEGRAM_BOT_TOKEN environment variable is not configured. Please add your Bot Token from @BotFather in Railway.'
     };
   }
 
-  const categoryKeys = Object.keys(STATIC_TEMPLATES);
-  const randomCat = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
-  const list = STATIC_TEMPLATES[randomCat];
-  const quote = list[Math.floor(Math.random() * list.length)];
+  // Choose template or use Pedro character quote
+  let postContent = '';
+  const isPedroChar = Math.random() < 0.4;
 
-  return {
-    text: quote,
-    character: null,
-    type: randomCat
-  };
-}
-
-export async function sendDailyChannelPost() {
-  if (BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE') {
-    console.error('⚠️ Please provide TELEGRAM_BOT_TOKEN environment variable.');
-    return;
-  }
-
-  const gm = generateDailyBroadcast();
-
-  // Construct caption with promo write-up and @generategmbot credit
-  const caption = 
+  if (customText) {
+    postContent = 
 `☀️ *DAILY GM BROADCAST* ☀️
 
-“${gm.text}”
+“${customText}”
 
-🚀 *Generate your GM post today with @generategmbot!*`;
+🚀 *Generate your GM post today with @generategmbot!*
+💎 *Powered by Pedro Team*`;
+  } else if (isPedroChar) {
+    const char = PEDRO_CHARACTERS[Math.floor(Math.random() * PEDRO_CHARACTERS.length)];
+    const quote = char.gms[Math.floor(Math.random() * char.gms.length)];
 
-  // Inline Button launching the Telegram Mini App
+    postContent = 
+`🦝 *${char.name.toUpperCase()} GM DROP* 🦝
+
+“${quote}”
+
+🚀 *Generate Pedro mascot GM posts today with @generategmbot!*
+💎 *Powered by Pedro Team*`;
+  } else {
+    const tmpl = TON_GRAM_TEMPLATES[Math.floor(Math.random() * TON_GRAM_TEMPLATES.length)];
+    postContent = 
+`${tmpl.header}
+
+${tmpl.body}
+
+${tmpl.footer}`;
+  }
+
+  // Construct Inline Keyboard buttons
+  const cleanChannel = channelId.startsWith('@') ? channelId : `@${channelId}`;
   const inlineKeyboard = {
     inline_keyboard: [
       [
         {
-          text: '☀️ Open App',
-          url: MINI_APP_URL
+          text: '☀️ Open GM Generator App',
+          url: miniAppUrl
+        }
+      ],
+      [
+        {
+          text: '📢 Join @generategm Channel',
+          url: `https://t.me/${cleanChannel.replace('@', '')}`
         }
       ]
     ]
   };
 
   const payload = {
-    chat_id: CHANNEL_ID,
-    text: caption,
+    chat_id: channelId,
+    text: postContent,
     parse_mode: 'Markdown',
     reply_markup: inlineKeyboard
   };
 
   try {
-    const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
 
     const result = await response.json();
+
     if (result.ok) {
-      console.log('✅ Daily GM Broadcast successfully posted to Telegram Channel!', result.result.message_id);
+      console.log('✅ Daily TON/Gram GM Broadcast posted to Telegram!', result.result.message_id);
+      return {
+        success: true,
+        messageId: result.result.message_id,
+        chat: channelId,
+        content: postContent
+      };
     } else {
-      console.error('❌ Failed to post to Telegram Channel:', result.description);
+      console.error('❌ Failed to post to Telegram:', result.description);
+      return {
+        success: false,
+        error: result.description
+      };
     }
   } catch (err) {
     console.error('❌ Error sending Telegram broadcast:', err);
+    return {
+      success: false,
+      error: err.message || 'Network error sending broadcast'
+    };
   }
 }
 
-// Run script if called directly
+// Execute immediately if executed directly via node CLI
 if (import.meta.url === `file://${process.argv[1]}`) {
-  sendDailyChannelPost();
+  console.log('🚀 Triggering immediate Telegram Channel Broadcast test...');
+  sendDailyChannelPost().then(res => {
+    console.log('Broadcast Result:', res);
+  });
 }

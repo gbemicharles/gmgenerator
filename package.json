@@ -8,6 +8,7 @@
     "build": "vite build",
     "start": "serve -s dist -l $PORT",
     "bot": "node server/telegramChannelBot.js",
+    "test-post": "node server/telegramChannelBot.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },

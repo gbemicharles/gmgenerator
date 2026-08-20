@@ -12,9 +12,25 @@ const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 
+import { sendDailyChannelPost } from './server/telegramChannelBot.js';
+
 // Health check endpoint for Railway / deployment platform checks
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
+});
+
+/**
+ * Instant Telegram Channel Broadcast Test API
+ * GET /api/test-post
+ */
+app.get('/api/test-post', async (req, res) => {
+  try {
+    const text = req.query.text || null;
+    const result = await sendDailyChannelPost(text);
+    return res.json(result);
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // Serve static frontend files from dist if dist exists
