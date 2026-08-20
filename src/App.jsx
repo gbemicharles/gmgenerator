@@ -149,6 +149,17 @@ export default function App() {
     showToast('info', 'Subscription verified! Full access unlocked 🚀', 'WELCOME TO @generategm');
   };
 
+  const scrollToResultCard = () => {
+    setTimeout(() => {
+      const el = document.getElementById('gm-result-card');
+      if (el) {
+        const yOffset = -85; 
+        const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }, 60);
+  };
+
   const handleSelectPedroCharacter = async (char) => {
     const allowed = await checkChannelSubscriptionGate();
     if (!allowed) return;
@@ -176,11 +187,7 @@ export default function App() {
     showToast('info', `${char.name} activated! GM generated 🦝🎶`, 'PEDRO CHARACTER ACTIVATED');
 
     handleRegisterAndCheckAchievements('pedro', 1);
-
-    const cardEl = document.querySelector('.generator-card-wrapper');
-    if (cardEl) {
-      cardEl.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToResultCard();
   };
 
   const generateNewGM = async (catId = activeCategory, tokenTarget = selectedToken, playSound = true) => {
@@ -193,6 +200,8 @@ export default function App() {
     setIsGenerating(true);
     setCopied(false);
     setUserGenCount(prev => prev + 1);
+
+    scrollToResultCard();
 
     setTimeout(() => {
       let gmText = '';
@@ -243,6 +252,7 @@ export default function App() {
       setIsGenerating(false);
 
       handleRegisterAndCheckAchievements(targetCat, 1);
+      scrollToResultCard();
     }, 280);
   };
 
@@ -254,12 +264,14 @@ export default function App() {
       setSelectedToken(pedroTokenObj);
     }
     generateNewGM(catId, selectedToken, true);
+    scrollToResultCard();
   };
 
   const handleSelectToken = (tokenObj) => {
     triggerHaptic('selection');
     setSelectedToken(tokenObj);
     generateNewGM('meme_tokens', tokenObj, true);
+    scrollToResultCard();
   };
 
   const handleEscalate = async () => {
@@ -279,6 +291,7 @@ export default function App() {
     };
 
     setCurrentGM(updatedGM);
+    scrollToResultCard();
     audioEngine.playEscalatedSound(result.level);
 
     if (result.level >= 5) {

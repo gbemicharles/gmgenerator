@@ -47,7 +47,7 @@ export default function GeneratorCard({
   const isFav = isFavorite(gmData?.text);
 
   return (
-    <div className={`generator-card-wrapper level-${escalationLevel} ${isGenerating ? 'is-loading' : ''}`}>
+    <div id="gm-result-card" className={`generator-card-wrapper level-${escalationLevel} ${isGenerating ? 'is-loading' : ''}`}>
       <div className="card-glow-bg" style={{ backgroundColor: catObj.color }}></div>
       
       <div className="generator-card">
