@@ -1,49 +1,61 @@
-import { createCanvas } from '@napi-rs/canvas';
+import { createCanvas, loadImage } from '@napi-rs/canvas';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const PEDRO_MASCOTS = [
+  'pedro_king.png',
+  'pedro_rocket.png',
+  'pedro_astronaut.png',
+  'pedro_dj.png',
+  'pedro_diamond.png'
+];
 
 /**
- * Ultra-Sleek, High-Legibility Web3 GM Photo Card Image Generator.
- * Features ultra-clear headers, prominent category badges, highly visible footers,
- * and massive hero typography designed for 100% readability on mobile screens.
+ * Ultra-Dynamic, Graphic-Rich Web3 GM Photo Card Image Generator.
+ * Features tech corner brackets, gradient hero quotes, floating Web3 sparkles/coins,
+ * Pedro mascot stamp badges, and rich cosmic background textures.
  * 
  * @param {string} quoteText - GM quote string
- * @param {object} categoryObj - { name: 'MOTIVATIONAL', icon: '🔥', color: '#F59E0B' }
+ * @param {object} categoryObj - { name: 'MOTIVATIONAL', icon: '🔥', color: '#F3BA2F' }
  * @returns {Promise<Buffer>} PNG Image Buffer
  */
-export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVATIONAL', icon: '🔥', color: '#F59E0B' }) {
+export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVATIONAL', icon: '🔥', color: '#F3BA2F' }) {
   const size = 1080;
   const canvas = createCanvas(size, size);
   const ctx = canvas.getContext('2d');
 
-  const accentColor = categoryObj.color || '#F59E0B';
+  const accentColor = categoryObj.color || '#F3BA2F';
   const categoryIcon = categoryObj.icon || '☀️';
   const categoryName = (categoryObj.name || 'DAILY GM').toUpperCase();
 
-  // 1. Deep Obsidian Base Background
+  // 1. Deep Obsidian Base
   ctx.fillStyle = '#060812';
   ctx.fillRect(0, 0, size, size);
 
-  // 2. Vibrant Dual Cosmic Aura Mesh Glows
+  // 2. Rich Multi-layered Mesh Aura Gradients
   ctx.save();
-  // Top-Left Neon Category Aura
-  const aura1 = ctx.createRadialGradient(240, 220, 30, 240, 220, 560);
-  aura1.addColorStop(0, `${accentColor}50`);
-  aura1.addColorStop(0.5, `${accentColor}20`);
+  const aura1 = ctx.createRadialGradient(260, 220, 40, 260, 220, 600);
+  aura1.addColorStop(0, `${accentColor}60`);
+  aura1.addColorStop(0.5, `${accentColor}22`);
   aura1.addColorStop(1, 'transparent');
   ctx.fillStyle = aura1;
   ctx.fillRect(0, 0, size, size);
 
-  // Bottom-Right Cyan/Purple Aura
-  const aura2 = ctx.createRadialGradient(840, 840, 30, 840, 840, 580);
-  aura2.addColorStop(0, 'rgba(56, 189, 248, 0.35)');
-  aura2.addColorStop(0.5, 'rgba(153, 69, 255, 0.20)');
+  const aura2 = ctx.createRadialGradient(840, 840, 40, 840, 840, 620);
+  aura2.addColorStop(0, 'rgba(153, 69, 255, 0.40)');
+  aura2.addColorStop(0.5, 'rgba(56, 189, 248, 0.22)');
   aura2.addColorStop(1, 'transparent');
   ctx.fillStyle = aura2;
   ctx.fillRect(0, 0, size, size);
   ctx.restore();
 
-  // 3. Cyber Tech Grid Overlay
+  // 3. Cyber Tech Grid & Floating Particle Graphics
   ctx.save();
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
   ctx.lineWidth = 1.5;
   const gridSize = 60;
   for (let x = 0; x < size; x += gridSize) {
@@ -58,6 +70,20 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
     ctx.lineTo(size, y);
     ctx.stroke();
   }
+
+  // Floating Sparkles Graphics (Background Details)
+  const sparkles = [
+    { x: 120, y: 150, char: '✨', s: 32 },
+    { x: 960, y: 180, char: '⚡', s: 36 },
+    { x: 140, y: 920, char: '💎', s: 30 },
+    { x: 940, y: 900, char: '🪙', s: 34 },
+    { x: 540, y: 100, char: '🌟', s: 28 }
+  ];
+  for (const sp of sparkles) {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.font = `${sp.s}px sans-serif`;
+    ctx.fillText(sp.char, sp.x, sp.y);
+  }
   ctx.restore();
 
   // 4. Glassmorphic Main Card Container
@@ -65,14 +91,13 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   const cardSize = size - margin * 2;
   const borderRadius = 40;
 
-  // Outer Neon Glow Shadow
+  // Card Halo Glow
   ctx.save();
-  ctx.shadowColor = `${accentColor}60`;
-  ctx.shadowBlur = 40;
-  ctx.shadowOffsetY = 12;
+  ctx.shadowColor = `${accentColor}70`;
+  ctx.shadowBlur = 45;
+  ctx.shadowOffsetY = 14;
 
-  // Glass Card Fill
-  ctx.fillStyle = 'rgba(13, 19, 32, 0.92)';
+  ctx.fillStyle = 'rgba(12, 17, 29, 0.93)';
   ctx.beginPath();
   ctx.roundRect(margin, margin, cardSize, cardSize, borderRadius);
   ctx.fill();
@@ -83,16 +108,24 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   const borderGrad = ctx.createLinearGradient(margin, margin, size - margin, size - margin);
   borderGrad.addColorStop(0, accentColor);
   borderGrad.addColorStop(0.5, '#FFFFFF');
-  borderGrad.addColorStop(1, '#38BDF8');
+  borderGrad.addColorStop(1, '#9945FF');
 
   ctx.strokeStyle = borderGrad;
   ctx.lineWidth = 4;
   ctx.beginPath();
   ctx.roundRect(margin, margin, cardSize, cardSize, borderRadius);
   ctx.stroke();
+
+  // Decorative Cyber Corner Accents (+)
+  ctx.fillStyle = accentColor;
+  ctx.font = 'bold 24px monospace';
+  ctx.fillText('+', margin + 15, margin + 30);
+  ctx.fillText('+', size - margin - 25, margin + 30);
+  ctx.fillText('+', margin + 15, size - margin - 15);
+  ctx.fillText('+', size - margin - 25, size - margin - 15);
   ctx.restore();
 
-  // 5. Highly Visible Top Header Row
+  // 5. Header Row with Pedro Mascot Stamp & Category Tag
   const headerY = margin + 45;
   const headerHeight = 56;
 
@@ -106,16 +139,41 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   ctx.fill();
   ctx.stroke();
 
-  // Sun Icon
   ctx.fillStyle = '#F59E0B';
   ctx.font = 'bold 28px sans-serif';
   ctx.fillText('☀️', margin + 54, headerY + 38);
 
-  // Title Text (Bright White & Clear)
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 21px "Trebuchet MS", "Arial Black", sans-serif';
   ctx.fillText('GM GENERATOR', margin + 96, headerY + 37);
   ctx.restore();
+
+  // Pedro Mascot Emblem Badge (Middle Header Graphic)
+  try {
+    const randomMascot = PEDRO_MASCOTS[Math.floor(Math.random() * PEDRO_MASCOTS.length)];
+    const localImgPath = path.join(__dirname, '..', 'public', 'pedro_characters', randomMascot);
+
+    if (fs.existsSync(localImgPath)) {
+      const mascotImg = await loadImage(localImgPath);
+      const mSize = 64;
+      const mX = size / 2 - mSize / 2;
+      const mY = headerY - 4;
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(size / 2, headerY + headerHeight / 2, 32, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.drawImage(mascotImg, mX, mY, mSize, mSize);
+      ctx.restore();
+    }
+  } catch (e) {
+    // Ignore emblem image error
+  }
 
   // Right Category Tag Pill ("🔥 MOTIVATIONAL")
   ctx.save();
@@ -134,14 +192,13 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
 
   ctx.fillStyle = '#FFFFFF';
   ctx.shadowColor = accentColor;
-  ctx.shadowBlur = 10;
+  ctx.shadowBlur = 12;
   ctx.fillText(pillText, pillX + 24, headerY + 37);
   ctx.restore();
 
-  // 6. MASSIVE Hero Typography (Quotes)
+  // 6. MASSIVE Gradient Hero Typography (Quote)
   const cleanQuote = quoteText.replace(/^["“]|["”]$/g, '').trim();
 
-  // Dynamic Font Size Scaling
   let fontSize = 72;
   let lineHeight = 92;
 
@@ -179,23 +236,28 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
 
   // Background Quotation Mark Watermark (" “ ")
   ctx.save();
-  ctx.fillStyle = `${accentColor}18`;
-  ctx.font = '900 200px Georgia, serif';
+  ctx.fillStyle = `${accentColor}22`;
+  ctx.font = '900 220px Georgia, serif';
   ctx.textAlign = 'center';
   ctx.fillText('“', size / 2, size / 2 - 35);
   ctx.restore();
 
-  // Draw Hero Text Lines with Crisp Drop Shadow
-  ctx.save();
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
-  ctx.shadowBlur = 20;
-  ctx.shadowOffsetY = 6;
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = fontStack;
-
+  // Text Gradient Fill (Bright White to Golden Accent Gradient)
   const totalTextHeight = lines.length * lineHeight;
   const textAreaCenterY = size / 2 + 15;
   let startY = textAreaCenterY - (totalTextHeight / 2) + (fontSize * 0.7);
+
+  const textGrad = ctx.createLinearGradient(0, startY - fontSize, 0, startY + totalTextHeight);
+  textGrad.addColorStop(0, '#FFFFFF');
+  textGrad.addColorStop(0.7, '#FFFFFF');
+  textGrad.addColorStop(1, accentColor);
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+  ctx.shadowBlur = 24;
+  ctx.shadowOffsetY = 8;
+  ctx.fillStyle = textGrad;
+  ctx.font = fontStack;
 
   for (let j = 0; j < lines.length; j++) {
     let lineStr = lines[j];
@@ -227,13 +289,13 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   ctx.stroke();
   ctx.restore();
 
-  // 8. HIGH-CONTRAST Glass Footer Bar (Crystal Clear Text on Mobile)
+  // 8. HIGH-CONTRAST Glass Footer Bar
   const footerBarY = size - margin - 80;
   const footerBarHeight = 56;
 
   ctx.save();
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.roundRect(margin + 36, footerBarY, cardSize - 72, footerBarHeight, 16);
