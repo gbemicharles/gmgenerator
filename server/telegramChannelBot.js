@@ -1,7 +1,7 @@
 /**
  * Telegram Daily Broadcast & Command Listener Bot Script for @generategmbot
  * Handles automated channel broadcasts, /start command welcome messages,
- * and native Telegram Mini App inline button launches.
+ * and dual Telegram Mini App button launching.
  */
 
 import 'dotenv/config';
@@ -22,6 +22,7 @@ export async function sendDailyChannelPost(customText = null) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
   const channelId = process.env.TELEGRAM_CHANNEL_ID || process.env.TELEGRAM_CHANNEL_USERNAME || '@generategm';
   const webAppDirectUrl = process.env.WEBAPP_URL || process.env.VITE_APP_URL || 'https://gmgenerator-production.up.railway.app';
+  const tmeAppUrl = 'https://t.me/generategmbot/app';
 
   if (!botToken || botToken === 'YOUR_BOT_TOKEN_HERE') {
     return {
@@ -56,7 +57,7 @@ export async function sendDailyChannelPost(customText = null) {
 
 Generate your preferred daily GM post with @generategmbot`;
 
-  // Inline keyboard button with native web_app property to launch Mini App directly
+  // Inline keyboard button
   const inlineKeyboard = {
     inline_keyboard: [
       [
@@ -141,6 +142,7 @@ Generate your preferred daily GM post with @generategmbot`;
 export function startTelegramBotListener() {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
   const webAppDirectUrl = process.env.WEBAPP_URL || process.env.VITE_APP_URL || 'https://gmgenerator-production.up.railway.app';
+  const tmeAppUrl = 'https://t.me/generategmbot/app';
 
   if (!botToken) {
     console.log('ℹ️ Telegram Bot Listener standby (TELEGRAM_BOT_TOKEN not set).');
@@ -193,7 +195,7 @@ export function startTelegramBotListener() {
 
 Generate your preferred daily GM posts, level up your streak, unlock achievements, and share custom GM cards to your groups & channel!
 
-👇 *Tap the button below to launch the Mini App:*`;
+👇 *Tap below to launch the Mini App:*`;
 
             const inlineKeyboard = {
               inline_keyboard: [
@@ -201,6 +203,12 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
                   {
                     text: '🚀 Open GM Generator App',
                     web_app: { url: webAppDirectUrl }
+                  }
+                ],
+                [
+                  {
+                    text: '⚡ Launch Mini App',
+                    url: tmeAppUrl
                   }
                 ],
                 [

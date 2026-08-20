@@ -35,6 +35,7 @@ app.post(['/api/telegram-webhook', '/telegram-webhook'], async (req, res) => {
     const text = msg.text.trim();
     const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
     const webAppDirectUrl = process.env.WEBAPP_URL || process.env.VITE_APP_URL || 'https://gmgenerator-production.up.railway.app';
+    const tmeAppUrl = 'https://t.me/generategmbot/app';
 
     if (text.startsWith('/start') || text.startsWith('/help')) {
       console.log(`📩 Webhook /start command received from chat ${msg.chat.id}`);
@@ -44,7 +45,7 @@ app.post(['/api/telegram-webhook', '/telegram-webhook'], async (req, res) => {
 
 Generate your preferred daily GM posts, level up your streak, unlock achievements, and share custom GM cards to your groups & channel!
 
-👇 *Tap the button below to launch the Mini App:*`;
+👇 *Tap below to launch the Mini App:*`;
 
       const inlineKeyboard = {
         inline_keyboard: [
@@ -52,6 +53,12 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
             {
               text: '🚀 Open GM Generator App',
               web_app: { url: webAppDirectUrl }
+            }
+          ],
+          [
+            {
+              text: '⚡ Launch Mini App',
+              url: tmeAppUrl
             }
           ],
           [
