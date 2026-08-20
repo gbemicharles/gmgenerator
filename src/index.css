@@ -77,7 +77,7 @@ button {
   background: rgba(11, 14, 20, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  padding-top: calc(0.8rem + env(safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px));
+  padding-top: calc(1rem + env(safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px));
   padding-bottom: 0.65rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   margin-bottom: 1rem;
@@ -85,13 +85,13 @@ button {
 
 @media (max-width: 767px) {
   .header-container {
-    padding-top: max(1.15rem, calc(0.85rem + env(safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px)));
+    padding-top: max(1.35rem, calc(1rem + env(safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px)));
     padding-bottom: 0.6rem;
   }
 }
 
 .is-telegram-webapp .header-container {
-  padding-top: max(1.4rem, calc(1.05rem + env(safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px)));
+  padding-top: max(1.6rem, calc(1.25rem + env(safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px)));
 }
 
 .header-content {
@@ -142,8 +142,8 @@ button {
   font-family: var(--font-mono);
   font-size: 0.6rem;
   font-weight: 800;
-  background: linear-gradient(135deg, rgba(0, 136, 204, 0.25) 0%, rgba(42, 171, 238, 0.25) 100%);
-  border: 1px solid rgba(0, 136, 204, 0.4);
+  background: transparent;
+  border: 1px solid rgba(0, 136, 204, 0.5);
   color: #38BDF8;
   padding: 0.1rem 0.4rem;
   border-radius: 4px;
@@ -191,39 +191,51 @@ button {
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
   color: var(--text-primary);
   transition: all 0.2s ease;
 }
 
 .header-tool-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .submit-btn {
-  background: rgba(16, 185, 129, 0.12);
-  border-color: rgba(16, 185, 129, 0.3);
+  background: transparent;
+  border-color: rgba(16, 185, 129, 0.4);
   color: #34D399;
 }
 
+.submit-btn:hover {
+  background: rgba(16, 185, 129, 0.15);
+}
+
 .slot-btn {
-  background: rgba(243, 186, 47, 0.12);
-  border-color: rgba(243, 186, 47, 0.3);
+  background: transparent;
+  border-color: rgba(243, 186, 47, 0.4);
   color: var(--accent-gold);
 }
 
+.slot-btn:hover {
+  background: rgba(243, 186, 47, 0.15);
+}
+
 .favorites-btn {
-  background: rgba(153, 69, 255, 0.12);
-  border-color: rgba(153, 69, 255, 0.3);
+  background: transparent;
+  border-color: rgba(153, 69, 255, 0.4);
   color: #C084FC;
+}
+
+.favorites-btn:hover {
+  background: rgba(153, 69, 255, 0.15);
 }
 
 .fav-count {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  background: rgba(153, 69, 255, 0.3);
+  background: rgba(153, 69, 255, 0.25);
   padding: 0.05rem 0.35rem;
   border-radius: 4px;
 }
@@ -232,8 +244,8 @@ button {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  background: rgba(243, 186, 47, 0.1);
-  border: 1px solid rgba(243, 186, 47, 0.3);
+  background: transparent;
+  border: 1px solid rgba(243, 186, 47, 0.4);
   padding: 0.35rem 0.65rem;
   border-radius: 9999px;
   color: var(--accent-gold);
@@ -946,8 +958,8 @@ button {
   gap: 0.35rem;
   padding: 0.35rem 0.75rem;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: var(--text-primary);
   font-family: var(--font-heading);
   font-weight: 700;
@@ -956,8 +968,8 @@ button {
 }
 
 .modal-close-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
   color: #FFFFFF;
 }
 
