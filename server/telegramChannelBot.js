@@ -1,6 +1,7 @@
 /**
- * Telegram Daily Broadcast Bot Script for @generategmbot
- * Posts 16:9 Widescreen Photo Card with one-click-copy quote caption and single Open App inline button.
+ * Telegram Daily Broadcast & Command Listener Bot Script for @generategmbot
+ * Handles automated channel broadcasts, /start command welcome messages,
+ * and Telegram Mini App menu buttons.
  */
 
 import 'dotenv/config';
@@ -49,7 +50,7 @@ export async function sendDailyChannelPost(customText = null) {
 
   const cleanQuote = stripEmojis(rawQuote);
 
-  // Caption text: Code-formatted (`“quote”`) for Telegram Telegram native ONE-CLICK-COPY + preferred phrasing
+  // Caption text: Code-formatted (`“quote”`) for Telegram native ONE-CLICK-COPY
   const caption = 
 `\`“${cleanQuote}”\`
 
@@ -135,7 +136,7 @@ Generate your preferred daily GM post with @generategmbot`;
 
 /**
  * Long-polling Telegram Bot Command Listener
- * Listens for /postgm, /gm, /broadcast, /dropgm commands in Telegram chat
+ * Listens for /start, /postgm, /gm, /broadcast, /dropgm commands in Telegram chat
  */
 export function startTelegramBotListener() {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
@@ -147,18 +148,6 @@ export function startTelegramBotListener() {
   }
 
   console.log('🤖 Telegram Bot Command Listener active! Send /start, /postgm or /gm in Telegram chat.');
-
-  // Clear any existing Webhooks to guarantee 100% reliable long-polling getUpdates
-  try {
-    fetch(`https://api.telegram.org/bot${botToken}/deleteWebhook?drop_pending_updates=false`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.ok) {
-          console.log('✅ Telegram Bot Webhook cleared for active long-polling!');
-        }
-      })
-      .catch(() => {});
-  } catch (e) {}
 
   // Set Telegram Native Bottom Left Menu Button to open Mini App
   try {
@@ -189,7 +178,7 @@ export function startTelegramBotListener() {
 
       if (data.ok && Array.isArray(data.result)) {
         for (const update of data.result) {
-          offset = update.update_id + 1;
+          offset = Math.max(offset, update.update_id + 1);
           const msg = update.message || update.channel_post;
           if (!msg || !msg.text) continue;
 
@@ -271,7 +260,18 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
     }
   };
 
-  pollUpdates();
+  // Initialize offset to latest pending update so bot doesn't get stuck on old updates
+  fetch(`https://api.telegram.org/bot${botToken}/getUpdates?offset=-1`)
+    .then(r => r.json())
+    .then(d => {
+      if (d.ok && Array.isArray(d.result) && d.result.length > 0) {
+        offset = d.result[d.result.length - 1].update_id + 1;
+      }
+      pollUpdates();
+    })
+    .catch(() => {
+      pollUpdates();
+    });
 }
 
 /**
