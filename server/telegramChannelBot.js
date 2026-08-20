@@ -1,6 +1,6 @@
 /**
  * Telegram Daily Broadcast Bot Script for @generategmbot
- * Posts clean 16:9 Widescreen Photo Card with GM quote caption and single Open App inline button.
+ * Posts 16:9 Widescreen Photo Card with one-click-copy quote caption and single Open App inline button.
  */
 
 import 'dotenv/config';
@@ -48,13 +48,13 @@ export async function sendDailyChannelPost(customText = null) {
 
   const cleanQuote = stripEmojis(rawQuote);
 
-  // Caption text underneath photo card (without "DAILY GM BROADCAST" line)
+  // Caption text: Code-formatted (`“quote”`) for Telegram Telegram native ONE-CLICK-COPY + preferred phrasing
   const caption = 
-`“${cleanQuote}”
+`\`“${cleanQuote}”\`
 
-Generate your daily GM post with @generategmbot`;
+Generate your preferred daily GM post with @generategmbot`;
 
-  // Inline keyboard button (Single Open App button, no Join Channel button)
+  // Inline keyboard button (Single Open App button)
   const inlineKeyboard = {
     inline_keyboard: [
       [
