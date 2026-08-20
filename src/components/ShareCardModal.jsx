@@ -16,6 +16,7 @@ export default function ShareCardModal({ isOpen, onClose, gmData, onShareX, onSh
   const [selectedTheme, setSelectedTheme] = useState('cyber');
   const [isExporting, setIsExporting] = useState(false);
   const [copiedImage, setCopiedImage] = useState(false);
+  const [exportedImageUri, setExportedImageUri] = useState(null);
 
   if (!isOpen || !gmData) return null;
 
@@ -35,11 +36,50 @@ export default function ShareCardModal({ isOpen, onClose, gmData, onShareX, onSh
         logging: false
       });
 
-      const imageURI = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.download = `gm-generator-${Date.now()}.png`;
-      link.href = imageURI;
-      link.click();
+      const dataUri = canvas.toDataURL('image/png');
+      setExportedImageUri(dataUri);
+
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+
+        const fileName = `gm-card-${Date.now()}.png`;
+        const file = new File([blob], fileName, { type: 'image/png' });
+
+        // 1. Mobile Web Share API (Triggers native iOS/Android "Save Image" sheet)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'GM Card',
+              text: 'Generated with GM Generator'
+            });
+            setIsExporting(false);
+            return;
+          } catch (shareErr) {
+            console.log('Web share fallback to download');
+          }
+        }
+
+        // 2. Standard Anchor download link
+        const imageURI = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = imageURI;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // 3. Telegram WebApp / iOS Safari Fallback: Open Blob URL in new window
+        setTimeout(() => {
+          try {
+            window.open(dataUri, '_blank');
+          } catch (e) {
+            // Ignore window open errors
+          }
+        }, 200);
+
+      }, 'image/png');
     } catch (err) {
       console.error('Failed to generate PNG image', err);
     } finally {
@@ -58,6 +98,9 @@ export default function ShareCardModal({ isOpen, onClose, gmData, onShareX, onSh
         backgroundColor: null,
         logging: false
       });
+
+      const dataUri = canvas.toDataURL('image/png');
+      setExportedImageUri(dataUri);
 
       canvas.toBlob(async (blob) => {
         if (blob && navigator.clipboard && navigator.clipboard.write) {
@@ -96,7 +139,10 @@ export default function ShareCardModal({ isOpen, onClose, gmData, onShareX, onSh
                 <button
                   key={theme.id}
                   className={`theme-pill ${selectedTheme === theme.id ? 'active' : ''}`}
-                  onClick={() => setSelectedTheme(theme.id)}
+                  onClick={() => {
+                    setSelectedTheme(theme.id);
+                    setExportedImageUri(null);
+                  }}
                 >
                   {theme.name}
                 </button>
@@ -155,6 +201,16 @@ export default function ShareCardModal({ isOpen, onClose, gmData, onShareX, onSh
               </div>
             </div>
           </div>
+
+          {/* Exported Image Mobile Long-Press Saver */}
+          {exportedImageUri && (
+            <div className="exported-image-saver-box">
+              <div className="saver-instruction">
+                <span>📲 <strong>Mobile User Notice:</strong> Tap & hold the generated PNG card below to <strong>Save to Photos / Gallery</strong>!</span>
+              </div>
+              <img src={exportedImageUri} alt="Generated GM Card PNG" className="exported-png-preview" />
+            </div>
+          )}
 
           <div className="card-modal-actions">
             <button 
