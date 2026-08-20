@@ -139,9 +139,14 @@ ${tmpl.footer}`;
 }
 
 // Execute immediately if executed directly via node CLI
-if (import.meta.url === `file://${process.argv[1]}`) {
+const isDirectRun = process.argv[1] && (
+  process.argv[1].includes('telegramChannelBot.js') || 
+  import.meta.url.endsWith('telegramChannelBot.js')
+);
+
+if (isDirectRun) {
   console.log('🚀 Triggering immediate Telegram Channel Broadcast test...');
   sendDailyChannelPost().then(res => {
-    console.log('Broadcast Result:', res);
+    console.log('Broadcast Result:', JSON.stringify(res, null, 2));
   });
 }
