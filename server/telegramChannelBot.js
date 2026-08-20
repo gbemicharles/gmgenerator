@@ -1,13 +1,81 @@
 /**
- * Telegram Daily Broadcast & Command Listener Bot Script for @generategmbot
- * Handles automated channel broadcasts, /start command welcome messages,
- * and Telegram Mini App button launching with channel join link.
+ * Telegram Daily Broadcast, Command Listener & User Reminder Bot Script for @generategmbot
+ * Handles automated channel broadcasts, daily morning user GM reminders,
+ * /start welcome messages, and Telegram Mini App launching.
  */
 
 import 'dotenv/config';
 import cron from 'node-cron';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { STATIC_TEMPLATES, CATEGORIES } from '../src/data/contentLibrary.js';
 import { renderGMCardImage } from './generateCardImage.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const USERS_FILE_PATH = path.join(__dirname, 'data', 'subscribedUsers.json');
+
+// Ensure data directory exists
+const dataDir = path.dirname(USERS_FILE_PATH);
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+// User Subscription Storage Helpers
+function getSubscribedUsers() {
+  try {
+    if (fs.existsSync(USERS_FILE_PATH)) {
+      const data = fs.readFileSync(USERS_FILE_PATH, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (e) {
+    console.error('Error reading subscribed users file:', e);
+  }
+  return [];
+}
+
+function saveSubscribedUser(chatObj) {
+  if (!chatObj || !chatObj.id || chatObj.type !== 'private') return;
+  const users = getSubscribedUsers();
+  const existing = users.find(u => u.id === chatObj.id);
+
+  if (!existing) {
+    const newUser = {
+      id: chatObj.id,
+      username: chatObj.username || '',
+      first_name: chatObj.first_name || '',
+      joinedAt: new Date().toISOString(),
+      remindersEnabled: true
+    };
+    users.push(newUser);
+    try {
+      fs.writeFileSync(USERS_FILE_PATH, JSON.stringify(users, null, 2), 'utf8');
+      console.log(`👤 Registered new user for daily GM reminders: ${chatObj.id} (${chatObj.username || 'user'})`);
+    } catch (e) {
+      console.error('Error saving subscribed user:', e);
+    }
+  }
+}
+
+function toggleUserReminders(chatId, enable = true) {
+  const users = getSubscribedUsers();
+  const userIndex = users.findIndex(u => u.id === chatId);
+  if (userIndex !== -1) {
+    users[userIndex].remindersEnabled = enable;
+  } else {
+    users.push({
+      id: chatId,
+      username: '',
+      first_name: '',
+      joinedAt: new Date().toISOString(),
+      remindersEnabled: enable
+    });
+  }
+  try {
+    fs.writeFileSync(USERS_FILE_PATH, JSON.stringify(users, null, 2), 'utf8');
+  } catch (e) {}
+}
 
 // Clean text helper to strip emojis for pure clean caption text output
 function stripEmojis(str) {
@@ -18,6 +86,9 @@ function stripEmojis(str) {
     .trim();
 }
 
+/**
+ * 1. Channel Broadcast Post Generator
+ */
 export async function sendDailyChannelPost(customText = null) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
   const channelId = process.env.TELEGRAM_CHANNEL_ID || process.env.TELEGRAM_CHANNEL_USERNAME || '@generategm';
@@ -30,7 +101,6 @@ export async function sendDailyChannelPost(customText = null) {
     };
   }
 
-  // Pick category and quote
   let rawQuote = '';
   let categoryObj = { name: 'MOTIVATIONAL', icon: '👑', color: '#F3BA2F' };
 
@@ -50,13 +120,11 @@ export async function sendDailyChannelPost(customText = null) {
 
   const cleanQuote = stripEmojis(rawQuote);
 
-  // Caption text: Code-formatted (`“quote”`) for Telegram native ONE-CLICK-COPY
   const caption = 
 `\`“${cleanQuote}”\`
 
 Generate your preferred daily GM post with @generategmbot`;
 
-  // Inline keyboard button for Telegram Channel Posts (Must use URL property for Telegram Channel API compliance)
   const inlineKeyboard = {
     inline_keyboard: [
       [
@@ -69,10 +137,8 @@ Generate your preferred daily GM post with @generategmbot`;
   };
 
   try {
-    // 1. Render 16:9 Widescreen GM Card PNG Buffer with high legibility fonts
     const cardPngBuffer = await renderGMCardImage(cleanQuote, categoryObj);
 
-    // 2. Upload PNG Photo File Buffer via Telegram sendPhoto API using Blob FormData
     const photoApiUrl = `https://api.telegram.org/bot${botToken}/sendPhoto`;
     const photoBlob = new Blob([cardPngBuffer], { type: 'image/png' });
 
@@ -90,7 +156,6 @@ Generate your preferred daily GM post with @generategmbot`;
 
     let result = await response.json();
 
-    // Fallback to text sendMessage if sendPhoto fails
     if (!result.ok) {
       console.warn('sendPhoto fallback to sendMessage:', result.description);
       const msgApiUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
@@ -135,8 +200,58 @@ Generate your preferred daily GM post with @generategmbot`;
 }
 
 /**
- * Long-polling Telegram Bot Command Listener
- * Listens for /start, /postgm, /gm, /broadcast, /dropgm commands in Telegram chat
+ * 2. Daily Morning User GM Reminder Broadcast Generator
+ */
+export async function sendDailyUserReminders() {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
+  const webAppDirectUrl = process.env.WEBAPP_URL || process.env.VITE_APP_URL || 'https://gmgenerator-production.up.railway.app';
+
+  if (!botToken) return;
+
+  const users = getSubscribedUsers().filter(u => u.remindersEnabled !== false);
+  console.log(`⏰ Sending daily morning GM reminders to ${users.length} user(s)...`);
+
+  const reminderText = 
+`☀️ *Good Morning! Time to generate your GM post!* 🚀
+
+Keep your streak alive, level up your GM rank, and drop today's GM quote to your channel & groups!
+
+👇 *Tap below to launch the Mini App:*`;
+
+  const inlineKeyboard = {
+    inline_keyboard: [
+      [
+        {
+          text: '🚀 Open GM Generator App',
+          web_app: { url: webAppDirectUrl }
+        }
+      ]
+    ]
+  };
+
+  let count = 0;
+  for (const u of users) {
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: u.id,
+          text: reminderText,
+          parse_mode: 'Markdown',
+          reply_markup: inlineKeyboard
+        })
+      });
+      const data = await res.json();
+      if (data.ok) count++;
+    } catch (e) {}
+  }
+
+  console.log(`✅ Daily user GM reminders sent to ${count}/${users.length} user(s)!`);
+}
+
+/**
+ * 3. Long-polling Telegram Bot Command Listener
  */
 export function startTelegramBotListener() {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
@@ -180,12 +295,17 @@ export function startTelegramBotListener() {
       const response = await fetch(url);
       const data = await response.json();
 
-      if (data.ok && Array.isArray(data.result) && data.result.length > 0) {
+      if (data.ok && Array.isArray(data.result)) {
         for (const update of data.result) {
           offset = Math.max(offset, update.update_id + 1);
 
           const msg = update.message || update.channel_post;
           if (!msg || !msg.text) continue;
+
+          // Register user for daily reminders
+          if (msg.chat && msg.chat.type === 'private') {
+            saveSubscribedUser(msg.chat);
+          }
 
           const text = msg.text.trim();
 
@@ -217,7 +337,7 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
               ]
             };
 
-            const sendRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -227,9 +347,35 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
                 reply_markup: inlineKeyboard
               })
             });
+            continue;
+          }
 
-            const sendJson = await sendRes.json();
-            console.log(`✅ Sent /start response to chat ${msg.chat.id}:`, sendJson.ok);
+          // Handle /stopremind or /remind commands
+          if (text.startsWith('/stopremind')) {
+            toggleUserReminders(msg.chat.id, false);
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: msg.chat.id,
+                text: '🔕 *Daily GM Reminders muted.* Send /remind anytime to re-enable!',
+                parse_mode: 'Markdown'
+              })
+            });
+            continue;
+          }
+
+          if (text.startsWith('/remind')) {
+            toggleUserReminders(msg.chat.id, true);
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: msg.chat.id,
+                text: '🔔 *Daily GM Reminders activated!* You will receive your daily morning GM alert!',
+                parse_mode: 'Markdown'
+              })
+            });
             continue;
           }
 
@@ -258,8 +404,6 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
             }
           }
         }
-      } else if (!data.ok) {
-        console.warn('Telegram polling warning:', data.description);
       }
     } catch (err) {
       console.error('Error in polling loop:', err.message);
@@ -272,8 +416,7 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
 }
 
 /**
- * Daily Morning GM Broadcast Scheduler
- * Automatically runs every morning at 8:00 AM UTC (or custom cron pattern from BROADCAST_CRON_SCHEDULE)
+ * 4. Daily Morning GM Broadcast Scheduler & User Reminders
  */
 export function startDailyBroadcastScheduler() {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
@@ -282,16 +425,30 @@ export function startDailyBroadcastScheduler() {
     return;
   }
 
-  const cronPattern = process.env.BROADCAST_CRON_SCHEDULE || '0 8 * * *'; // Default 8:00 AM daily
-  console.log(`⏰ Daily Morning GM Broadcast Scheduler active! Schedule pattern: '${cronPattern}'`);
+  // 1. Daily Channel Photo Card Broadcast (Default: 8:00 AM UTC)
+  const channelCronPattern = process.env.BROADCAST_CRON_SCHEDULE || '0 8 * * *';
+  console.log(`⏰ Daily Channel GM Broadcast active! Schedule pattern: '${channelCronPattern}'`);
 
-  cron.schedule(cronPattern, async () => {
+  cron.schedule(channelCronPattern, async () => {
     console.log('⏰ Running automated daily morning GM broadcast to Telegram Channel...');
     try {
       const result = await sendDailyChannelPost();
-      console.log('Daily Morning Broadcast Result:', result);
+      console.log('Daily Channel Broadcast Result:', result);
     } catch (err) {
-      console.error('Error in daily morning broadcast job:', err);
+      console.error('Error in channel broadcast job:', err);
+    }
+  });
+
+  // 2. Daily User Morning GM Reminder Broadcast (Default: 9:00 AM UTC)
+  const userReminderCronPattern = process.env.REMINDER_CRON_SCHEDULE || '0 9 * * *';
+  console.log(`⏰ Daily User GM Reminder Scheduler active! Schedule pattern: '${userReminderCronPattern}'`);
+
+  cron.schedule(userReminderCronPattern, async () => {
+    console.log('⏰ Running automated daily user GM reminder broadcast...');
+    try {
+      await sendDailyUserReminders();
+    } catch (err) {
+      console.error('Error in user reminder job:', err);
     }
   });
 }
