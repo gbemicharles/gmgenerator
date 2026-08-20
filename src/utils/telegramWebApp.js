@@ -12,6 +12,10 @@ export function initTelegramWebApp() {
       tg.ready();
       tg.expand();
 
+      if (typeof document !== 'undefined') {
+        document.body.classList.add('is-telegram-webapp');
+      }
+
       // Request fullscreen (Telegram Bot API 8.0+)
       if (tg.requestFullscreen) {
         tg.requestFullscreen();

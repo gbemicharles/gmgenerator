@@ -76,9 +76,21 @@ button {
   background: rgba(11, 14, 20, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  padding: 0.85rem 0;
+  padding-top: calc(0.85rem + env(safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px));
+  padding-bottom: 0.85rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   margin-bottom: 1rem;
+}
+
+@media (max-width: 767px) {
+  .header-container {
+    padding-top: max(1.4rem, calc(1.1rem + env(safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px)));
+    padding-bottom: 0.75rem;
+  }
+}
+
+.is-telegram-webapp .header-container {
+  padding-top: max(1.75rem, calc(1.35rem + env(safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px)));
 }
 
 .header-content {
