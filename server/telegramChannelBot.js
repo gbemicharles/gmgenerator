@@ -11,28 +11,7 @@
 import 'dotenv/config';
 import { PEDRO_CHARACTERS } from '../src/data/pedroCharacters.js';
 
-const TON_GRAM_TEMPLATES = [
-  {
-    header: "☀️ *GRAM MORNING TON FAMILY!* ☀️",
-    body: "“GM to all TON memecoin holders! Resistance Dog $REDO 🐕‍🦺, Pedro 🦝, and Utya 🦆 cooking parabolic gains on Telegram!”",
-    footer: "🚀 *Generate your GM post today with @generategmbot!*\n💎 *Powered by Pedro Team*"
-  },
-  {
-    header: "💎 *GRAM MORNING MEMECOIN ARMY!* 💎",
-    body: "“Gram morning ser! Telegram ecosystem tokens printing parabolic green candles on TON! Holding $REDO 🐕‍🦺, $PEDRO 🦝, and $UTYA 🦆 with maximum gigachad conviction!”",
-    footer: "🚀 *Create your unhinged GM post now with @generategmbot!*"
-  },
-  {
-    header: "🦝 *PEDRO MASCOT DAILY GM DROP* 🦝",
-    body: "“GM to the TON believers! Hooded dog, trash bandit Pedro, and yellow duck taking over Web3! 100x vibes only!”",
-    footer: "🔥 *Generate custom Pedro GM cards on @generategmbot!*"
-  },
-  {
-    header: "⚡ *TELEGRAM SUPERCYCLE ACTIVATED* ⚡",
-    body: "“GM! 99% of my timeline is Telegram Mini Apps and TON memecoins cooking. We are so insanely early!”",
-    footer: "☀️ *Start your morning right with @generategmbot!*"
-  }
-];
+import { STATIC_TEMPLATES } from '../src/data/contentLibrary.js';
 
 export async function sendDailyChannelPost(customText = null) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
@@ -46,9 +25,8 @@ export async function sendDailyChannelPost(customText = null) {
     };
   }
 
-  // Choose template or use Pedro character quote
+  // Generate normal GM quote from core library
   let postContent = '';
-  const isPedroChar = Math.random() < 0.4;
 
   if (customText) {
     postContent = 
@@ -56,27 +34,19 @@ export async function sendDailyChannelPost(customText = null) {
 
 “${customText}”
 
-🚀 *Generate your GM post today with @generategmbot!*
-💎 *Powered by Pedro Team*`;
-  } else if (isPedroChar) {
-    const char = PEDRO_CHARACTERS[Math.floor(Math.random() * PEDRO_CHARACTERS.length)];
-    const quote = char.gms[Math.floor(Math.random() * char.gms.length)];
-
-    postContent = 
-`🦝 *${char.name.toUpperCase()} GM DROP* 🦝
-
-“${quote}”
-
-🚀 *Generate Pedro mascot GM posts today with @generategmbot!*
-💎 *Powered by Pedro Team*`;
+🚀 *Generate your daily GM post with @generategmbot!*`;
   } else {
-    const tmpl = TON_GRAM_TEMPLATES[Math.floor(Math.random() * TON_GRAM_TEMPLATES.length)];
+    const categoryKeys = Object.keys(STATIC_TEMPLATES);
+    const randomCat = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
+    const list = STATIC_TEMPLATES[randomCat];
+    const gmQuote = list[Math.floor(Math.random() * list.length)];
+
     postContent = 
-`${tmpl.header}
+`☀️ *DAILY GM BROADCAST* ☀️
 
-${tmpl.body}
+“${gmQuote}”
 
-${tmpl.footer}`;
+🚀 *Generate your daily GM post with @generategmbot!*`;
   }
 
   // Construct Inline Keyboard buttons
