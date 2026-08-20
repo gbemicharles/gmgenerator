@@ -21,7 +21,7 @@ function stripEmojis(str) {
 export async function sendDailyChannelPost(customText = null) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
   const channelId = process.env.TELEGRAM_CHANNEL_ID || process.env.TELEGRAM_CHANNEL_USERNAME || '@generategm';
-  const webAppDirectUrl = process.env.WEBAPP_URL || process.env.VITE_APP_URL || 'https://gmgenerator-production.up.railway.app';
+  const miniAppUrl = process.env.TELEGRAM_MINI_APP_URL || 'https://t.me/generategmbot';
 
   if (!botToken || botToken === 'YOUR_BOT_TOKEN_HERE') {
     return {
@@ -56,13 +56,13 @@ export async function sendDailyChannelPost(customText = null) {
 
 Generate your preferred daily GM post with @generategmbot`;
 
-  // Inline keyboard button (Single Open App button for channel broadcast)
+  // Inline keyboard button for Telegram Channel Posts (Must use URL property for Telegram Channel API compliance)
   const inlineKeyboard = {
     inline_keyboard: [
       [
         {
           text: 'Open GM Generator App',
-          web_app: { url: webAppDirectUrl }
+          url: miniAppUrl
         }
       ]
     ]
@@ -180,7 +180,7 @@ export function startTelegramBotListener() {
       const response = await fetch(url);
       const data = await response.json();
 
-      if (data.ok && Array.isArray(data.result)) {
+      if (data.ok && Array.isArray(data.result) && data.result.length > 0) {
         for (const update of data.result) {
           offset = Math.max(offset, update.update_id + 1);
 
