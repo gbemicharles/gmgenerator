@@ -20,7 +20,7 @@ import ToastNotification from './components/ToastNotification';
 import { getRandomGM, generateTokenGM } from './data/contentLibrary';
 import { PEDRO_CHARACTERS } from './data/pedroCharacters';
 import SubscribeChannelModal from './components/SubscribeChannelModal';
-import { getHasSubscribedChannel, setHasSubscribedChannel } from './utils/channelSubManager';
+import { getHasSubscribedChannel, setHasSubscribedChannel, checkLiveTelegramSubscription } from './utils/channelSubManager';
 import { escalateGM } from './utils/escalator';
 import { getStreakData, registerGMGenerated } from './utils/streakManager';
 import { evaluateAchievements, getUnlockedAchievements, ACHIEVEMENTS } from './utils/achievementManager';
@@ -137,10 +137,16 @@ export default function App() {
     }
   };
 
-  const checkChannelSubscriptionGate = () => {
-    if (userGenCount >= 1 && !hasSubscribedChannel) {
-      setIsSubscribeModalOpen(true);
-      return false;
+  const checkChannelSubscriptionGate = async () => {
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    const userId = tgUser?.id;
+
+    if (userGenCount >= 1 && userId) {
+      const isSubscribed = await checkLiveTelegramSubscription(userId);
+      if (!isSubscribed) {
+        setIsSubscribeModalOpen(true);
+        return false;
+      }
     }
     return true;
   };
@@ -152,8 +158,10 @@ export default function App() {
     showToast('info', 'Subscription verified! Full access unlocked 🚀', 'WELCOME TO @generategm');
   };
 
-  const handleSelectPedroCharacter = (char) => {
-    if (!checkChannelSubscriptionGate()) return;
+  const handleSelectPedroCharacter = async (char) => {
+    const allowed = await checkChannelSubscriptionGate();
+    if (!allowed) return;
+
     triggerHaptic('impact', 'rigid');
 
     setActivePedroCharacter(char);
@@ -184,9 +192,10 @@ export default function App() {
     }
   };
 
-  const generateNewGM = (catId = activeCategory, tokenTarget = selectedToken, playSound = true) => {
-    if (playSound && !checkChannelSubscriptionGate()) {
-      return;
+  const generateNewGM = async (catId = activeCategory, tokenTarget = selectedToken, playSound = true) => {
+    if (playSound) {
+      const allowed = await checkChannelSubscriptionGate();
+      if (!allowed) return;
     }
 
     triggerHaptic('impact', 'medium');
@@ -262,9 +271,10 @@ export default function App() {
     generateNewGM('meme_tokens', tokenObj, true);
   };
 
-  const handleEscalate = () => {
+  const handleEscalate = async () => {
     if (!currentGM) return;
-    if (!checkChannelSubscriptionGate()) return;
+    const allowed = await checkChannelSubscriptionGate();
+    if (!allowed) return;
 
     triggerHaptic('impact', 'heavy');
 
