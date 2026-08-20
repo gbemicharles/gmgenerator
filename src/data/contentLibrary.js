@@ -313,25 +313,34 @@ export const STATIC_TEMPLATES = {
 // Combinator Slot Arrays for procedurally generated GMs
 export const COMBINATOR = {
   greetings: [
-    "GM", "GM ser", "GM legends", "GM frens", "GM CT", "GM builders", 
-    "GM degens", "GM bros", "GM chads", "GM degenerative degens", "GM bagholders",
-    "GM lurkers", "GM fam", "GM TON family", "Gram morning", "Gram morning ser", 
-    "Gram morning fam", "Gram morning legends", "Gram morning TON family",
-    "GM real ones", "GM survivors", "GM whales"
+    "GM", 
+    "GM ser", 
+    "GM legends", 
+    "GM frens", 
+    "GM CT", 
+    "GM builders", 
+    "GM degens", 
+    "GM chads", 
+    "GM bagholders",
+    "GM TON family", 
+    "Gram morning", 
+    "Gram morning legends", 
+    "GM survivors"
   ],
   subjects: [
-    "to everyone still holding",
-    "to all my degenerative bros",
+    "to everyone still holding through the dip",
+    "to all my degenerative bros grinding 24/7",
     "to the gigachads holding through 90% drawdowns",
-    "to the people who didn't sell the bottom",
-    "to the builders working in the dark",
+    "to the people who refused to sell the bottom",
+    "to the builders cooking in total darkness",
     "to the bagholders waiting for break-even",
     "to the believers who ignored the bear market",
     "to the liquidity providers keeping the pool alive",
-    "to everyone who checks charts before brushing teeth",
+    "to everyone checking charts before brushing teeth",
     "to the 7 people awake in the Telegram group",
-    "to everyone who bought the dip of the dip",
-    "to the legends who never muted notifications"
+    "to the legends who bought the dip of the dip",
+    "to the memecoin warriors holding $PEDRO & $REDO",
+    "to everyone who never muted group notifications"
   ],
   cryptoTerms: [
     "gas fees", "leverage trading", "green candles", "the supercycle",
@@ -348,20 +357,19 @@ export const COMBINATOR = {
   ],
   punchlines: [
     "full degenerative behavior unlocked for the day",
-    "retardio conviction levels reached",
-    "pure gigachad energy only",
-    "we are so insanely early",
+    "pure gigachad conviction levels reached",
+    "unstoppable Web3 energy activated",
+    "we are so insanely early to this supercycle",
     "the chart will recover eventually (probably)",
-    "today we pretend everything is totally fine",
-    "another day of questionable financial decisions",
-    "the market cannot hurt me anymore, I am numb",
+    "today we pretend everything is completely fine",
+    "another day of making questionable financial decisions",
+    "the market cannot hurt me anymore, I am 100% numb",
     "we are either absolute geniuses or completely delusional",
-    "portfolio is down 60% but the vibes are 1000%",
+    "portfolio is down 60% but the vibes remain 1000%",
+    "selling is strictly forbidden by ancient crypto law",
+    "coffee is strong, conviction is even stronger",
     "McDonald's application form is saved in my bookmarks",
-    "touching grass has been officially cancelled until Q4",
-    "1 GM equals 1 GM and that is non-negotiable",
-    "selling is forbidden by ancient crypto law",
-    "coffee is strong, conviction is stronger"
+    "touching grass has been officially postponed until Q4"
   ],
   endings: [
     "LFG! 🚀", "We move. 🫡", "Stay safe out there. 💎", 

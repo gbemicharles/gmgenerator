@@ -36,7 +36,18 @@ export default function SlotMachineModal({ isOpen, onClose, onCopy, onShareX, on
     }, 80);
   };
 
-  const compiledText = `${reel1} ${reel2}. ${reel3.charAt(0).toUpperCase() + reel3.slice(1)}.`;
+  const formatSlotSentence = (r1, r2, r3) => {
+    if (!r1 || !r2 || !r3) return '';
+    const g = r1.trim();
+    const s = r2.trim();
+    let p = r3.trim();
+    p = p.charAt(0).toLowerCase() + p.slice(1);
+    p = p.replace(/\.$/, '');
+
+    return `${g}, ${s} — ${p}.`;
+  };
+
+  const compiledText = formatSlotSentence(reel1, reel2, reel3);
 
   return (
     <div className="modal-overlay" onClick={onClose}>
