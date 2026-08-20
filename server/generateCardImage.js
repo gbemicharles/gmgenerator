@@ -219,7 +219,7 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   ctx.restore();
 
   // 7. Metallic Gold Divider Line
-  const footerLineY = height - margin - 75;
+  const footerLineY = height - margin - 68;
   ctx.save();
   const lineGrad = ctx.createLinearGradient(margin + 30, 0, width - margin - 30, 0);
   lineGrad.addColorStop(0, 'transparent');
@@ -237,29 +237,29 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   ctx.restore();
 
   // 8. HIGH-CONTRAST Crystal Clear Footer Bar
-  const footerBarY = height - margin - 62;
-  const footerBarHeight = 50;
+  const footerBarY = height - margin - 54;
+  const footerBarHeight = 44;
 
   ctx.save();
   ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
   ctx.strokeStyle = 'rgba(243, 186, 47, 0.4)';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.roundRect(margin + 30, footerBarY, cardW - 60, footerBarHeight, 16);
+  ctx.roundRect(margin + 30, footerBarY, cardW - 60, footerBarHeight, 14);
   ctx.fill();
   ctx.stroke();
 
   // Left Footer: ⚡ GM GENERATOR  •  @generategmbot
   ctx.textAlign = 'left';
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 21px "Trebuchet MS", monospace';
-  ctx.fillText('⚡ GM GENERATOR  •  @generategmbot', margin + 50, footerBarY + 33);
+  ctx.font = 'bold 19px "Trebuchet MS", monospace';
+  ctx.fillText('⚡ GM GENERATOR  •  @generategmbot', margin + 46, footerBarY + 29);
 
-  // Right Footer Link: t.me/generategmbot 👑 (No /app!)
+  // Right Footer Link: t.me/generategmbot 👑
   ctx.textAlign = 'right';
   ctx.fillStyle = goldLight;
-  ctx.font = 'bold 21px "Trebuchet MS", monospace';
-  ctx.fillText('t.me/generategmbot 👑', width - margin - 50, footerBarY + 33);
+  ctx.font = 'bold 19px "Trebuchet MS", monospace';
+  ctx.fillText('t.me/generategmbot 👑', width - margin - 46, footerBarY + 29);
   ctx.restore();
 
   return canvas.toBuffer('image/png');
