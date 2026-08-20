@@ -1,15 +1,69 @@
-import React from 'react';
-import { Send, CheckCircle2, Lock, Sparkles, X, ArrowLeft } from 'lucide-react';
+import React, { useState } from 'react';
+import { Send, CheckCircle2, Lock, Sparkles, ArrowLeft, RefreshCw, AlertCircle } from 'lucide-react';
+import { triggerHaptic } from '../utils/telegramWebApp';
+import { audioEngine } from '../utils/audioEngine';
 
 export default function SubscribeChannelModal({ isOpen, onClose, onConfirmSubscribed }) {
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
+
   if (!isOpen) return null;
 
   const handleJoinChannel = () => {
+    setErrorMsg(null);
     const channelUrl = 'https://t.me/generategm';
     if (window.Telegram?.WebApp?.openTelegramLink) {
       window.Telegram.WebApp.openTelegramLink(channelUrl);
     } else {
       window.open(channelUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleVerifySubscription = async () => {
+    setIsVerifying(true);
+    setErrorMsg(null);
+    triggerHaptic('impact', 'medium');
+
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    const userId = tgUser?.id;
+
+    // If outside Telegram or no User ID (e.g. testing in desktop browser without Telegram initData)
+    if (!userId) {
+      setTimeout(() => {
+        setIsVerifying(false);
+        audioEngine.playGMChime();
+        triggerHaptic('notification', 'success');
+        onConfirmSubscribed();
+      }, 1000);
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/verify-sub?userId=${userId}`);
+      const data = await res.json();
+
+      if (data.isSubscribed) {
+        setIsVerifying(false);
+        audioEngine.playGMChime();
+        triggerHaptic('notification', 'success');
+        onConfirmSubscribed();
+      } else {
+        setIsVerifying(false);
+        audioEngine.playSlotSpin();
+        triggerHaptic('notification', 'error');
+
+        if (data.requiresBotToken) {
+          // If server env hasn't set TELEGRAM_BOT_TOKEN yet, notify user & unlock gracefully
+          onConfirmSubscribed();
+        } else {
+          setErrorMsg('❌ Verification failed: You have not joined @generategm yet! Tap JOIN @generategm CHANNEL first.');
+        }
+      }
+    } catch (e) {
+      console.error('Subscription verification failed:', e);
+      setIsVerifying(false);
+      // Network fallback
+      onConfirmSubscribed();
     }
   };
 
@@ -39,15 +93,47 @@ export default function SubscribeChannelModal({ isOpen, onClose, onConfirmSubscr
             </p>
           </div>
 
+          {errorMsg && (
+            <div className="verify-error-box" style={{
+              background: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
+              color: '#FCA5A5',
+              padding: '0.75rem 1rem',
+              borderRadius: '12px',
+              fontSize: '0.85rem',
+              fontWeight: '600',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              lineHeight: '1.4'
+            }}>
+              <AlertCircle size={18} style={{ flexShrink: 0 }} />
+              <span>{errorMsg}</span>
+            </div>
+          )}
+
           <div className="subscribe-actions">
             <button className="subscribe-btn join-channel-btn" onClick={handleJoinChannel}>
               <Send size={18} />
               <span>JOIN @generategm CHANNEL</span>
             </button>
 
-            <button className="subscribe-btn confirm-sub-btn" onClick={onConfirmSubscribed}>
-              <CheckCircle2 size={18} />
-              <span>I HAVE SUBSCRIBED</span>
+            <button 
+              className="subscribe-btn confirm-sub-btn" 
+              onClick={handleVerifySubscription}
+              disabled={isVerifying}
+            >
+              {isVerifying ? (
+                <>
+                  <RefreshCw className="animate-spin" size={18} />
+                  <span>VERIFYING ON TELEGRAM...</span>
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 size={18} />
+                  <span>VERIFY SUBSCRIPTION</span>
+                </>
+              )}
             </button>
           </div>
         </div>
