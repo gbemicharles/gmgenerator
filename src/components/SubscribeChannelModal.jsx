@@ -101,8 +101,8 @@ export default function SubscribeChannelModal({ isOpen, onClose, onConfirmSubscr
       <div className="modal-content subscribe-modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header subscribe-header">
           <div className="modal-title-with-badge">
-            <Lock className="lock-icon" size={22} />
-            <h3>JOIN @generategm TO CONTINUE</h3>
+            <Sparkles className="star-gold" size={22} />
+            <h3>JOIN OUR COMMUNITY @generategm</h3>
           </div>
           <button className="modal-close-btn" onClick={onClose} title="Back">
             <ArrowLeft size={16} /> <span>Back</span>
@@ -112,13 +112,13 @@ export default function SubscribeChannelModal({ isOpen, onClose, onConfirmSubscr
         <div className="modal-body subscribe-body">
           <div className="subscribe-banner">
             <div className="banner-badge">
-              <Sparkles size={14} /> COMPULSORY TELEGRAM CHANNEL JOIN
+              <Sparkles size={14} /> OFFICIAL TELEGRAM COMMUNITY
             </div>
             <h4 className="banner-title">
-              Unlock Unlimited GM Memes & Pedro Mascot Drops
+              Stay Connected for Daily GM Memes & Mascot Drops
             </h4>
             <p className="banner-desc">
-              Subscribe to the official Telegram channel <strong>@generategm</strong> to continue generating unhinged GMs, escalating levels, and unlocking exclusive mascot cards.
+              Subscribe to the official Telegram channel <strong>@generategm</strong> for daily community GM posts, unhinged meme templates, and exclusive Pedro mascot updates.
             </p>
           </div>
 

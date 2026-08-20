@@ -138,16 +138,7 @@ export default function App() {
   };
 
   const checkChannelSubscriptionGate = async () => {
-    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    const userId = tgUser?.id;
-
-    if (userGenCount >= 1 && userId) {
-      const isSubscribed = await checkLiveTelegramSubscription(userId);
-      if (!isSubscribed) {
-        setIsSubscribeModalOpen(true);
-        return false;
-      }
-    }
+    // Compulsory channel gate removed - users can generate freely
     return true;
   };
 
