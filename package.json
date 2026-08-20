@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "start": "vite preview --port $PORT --host",
+    "bot": "node server/telegramChannelBot.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
