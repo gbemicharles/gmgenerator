@@ -1,10 +1,24 @@
 /**
- * Telegram Daily Photo Card Broadcast Bot Script for @generategmbot
- * Posts clean normal GM quotes accompanied by Pedro Web3 Mascot photo cards.
+ * Telegram Daily Dynamic GM Photo Card Broadcast Bot Script for @generategmbot
+ * Renders high-def GM Photo Card PNGs (with quote text inside card) and uploads to Telegram.
  */
 
 import 'dotenv/config';
-import { STATIC_TEMPLATES } from '../src/data/contentLibrary.js';
+import { STATIC_TEMPLATES, CATEGORIES } from '../src/data/contentLibrary.js';
+import { renderGMCardImage } from './generateCardImage.js';
+
+// Pedro Mascot Character PNG files
+const PEDRO_CHARACTER_FILES = [
+  "pedro_king.png",
+  "pedro_astronaut.png",
+  "pedro_dj.png",
+  "pedro_diamond.png",
+  "pedro_rocket.png",
+  "pedro_rockstar.png",
+  "pedro_wizard.png",
+  "pedro_copium.png",
+  "pedro_rekt.png"
+];
 
 // Clean text helper to strip emojis for pure clean text output
 function stripEmojis(str) {
@@ -14,19 +28,6 @@ function stripEmojis(str) {
     .replace(/\s+/g, ' ')
     .trim();
 }
-
-// Pedro Mascot Photo Cards for Telegram sendPhoto broadcast
-const PEDRO_PHOTO_CARDS = [
-  "https://raw.githubusercontent.com/gbemicharles/gmgenerator/main/public/pedro_characters/pedro_king.png",
-  "https://raw.githubusercontent.com/gbemicharles/gmgenerator/main/public/pedro_characters/pedro_astronaut.png",
-  "https://raw.githubusercontent.com/gbemicharles/gmgenerator/main/public/pedro_characters/pedro_dj.png",
-  "https://raw.githubusercontent.com/gbemicharles/gmgenerator/main/public/pedro_characters/pedro_diamond.png",
-  "https://raw.githubusercontent.com/gbemicharles/gmgenerator/main/public/pedro_characters/pedro_rocket.png",
-  "https://raw.githubusercontent.com/gbemicharles/gmgenerator/main/public/pedro_characters/pedro_rockstar.png",
-  "https://raw.githubusercontent.com/gbemicharles/gmgenerator/main/public/pedro_characters/pedro_wizard.png",
-  "https://raw.githubusercontent.com/gbemicharles/gmgenerator/main/public/pedro_characters/pedro_copium.png",
-  "https://raw.githubusercontent.com/gbemicharles/gmgenerator/main/public/pedro_characters/pedro_rekt.png"
-];
 
 export async function sendDailyChannelPost(customText = null) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
@@ -40,30 +41,38 @@ export async function sendDailyChannelPost(customText = null) {
     };
   }
 
-  // Select clean normal GM quote without emojis
+  // Pick category and quote
   let rawQuote = '';
+  let categoryLabel = 'DAILY GM';
+  let randomCat = 'motivational';
+
   if (customText) {
     rawQuote = customText;
   } else {
     const categoryKeys = Object.keys(STATIC_TEMPLATES);
-    const randomCat = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
+    randomCat = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
     const list = STATIC_TEMPLATES[randomCat];
     rawQuote = list[Math.floor(Math.random() * list.length)];
+
+    const catObj = CATEGORIES.find(c => c.id === randomCat);
+    if (catObj) {
+      categoryLabel = catObj.name;
+    }
   }
 
   const cleanQuote = stripEmojis(rawQuote);
 
+  // Pick random Pedro Mascot image for the photo card
+  const pedroFile = PEDRO_CHARACTER_FILES[Math.floor(Math.random() * PEDRO_CHARACTER_FILES.length)];
+
+  // Clean caption & clean inline buttons (no emojis)
   const caption = 
-`*DAILY GM BROADCAST*
+`DAILY GM BROADCAST
 
 “${cleanQuote}”
 
-*Generate your daily GM post with @generategmbot*`;
+Generate your daily GM post with @generategmbot`;
 
-  // Select random Pedro photo card image
-  const photoUrl = PEDRO_PHOTO_CARDS[Math.floor(Math.random() * PEDRO_PHOTO_CARDS.length)];
-
-  // Clean inline keyboard buttons (no emojis)
   const cleanChannel = channelId.startsWith('@') ? channelId : `@${channelId}`;
   const inlineKeyboard = {
     inline_keyboard: [
@@ -83,27 +92,28 @@ export async function sendDailyChannelPost(customText = null) {
   };
 
   try {
-    // Try sending with photo card image first via sendPhoto
+    // 1. Render the dynamic HD GM Photo Card PNG Buffer (quote inside image)
+    const imageBuffer = await renderGMCardImage(cleanQuote, categoryLabel, pedroFile);
+
+    // 2. Upload PNG Photo File Buffer via Telegram sendPhoto API with FormData
     const photoApiUrl = `https://api.telegram.org/bot${botToken}/sendPhoto`;
-    const photoPayload = {
-      chat_id: channelId,
-      photo: photoUrl,
-      caption: caption,
-      parse_mode: 'Markdown',
-      reply_markup: inlineKeyboard
-    };
+    const formData = new FormData();
+    formData.append('chat_id', channelId);
+    formData.append('photo', new Blob([imageBuffer], { type: 'image/png' }), 'gm_card_generated.png');
+    formData.append('caption', caption);
+    formData.append('parse_mode', 'Markdown');
+    formData.append('reply_markup', JSON.stringify(inlineKeyboard));
 
     let response = await fetch(photoApiUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(photoPayload)
+      body: formData
     });
 
     let result = await response.json();
 
-    // Fallback to sendMessage text if photo upload is blocked
+    // Fallback to text sendMessage if image upload fails
     if (!result.ok) {
-      console.warn('sendPhoto fallback to sendMessage:', result.description);
+      console.warn('sendPhoto upload failed, falling back to sendMessage:', result.description);
       const msgApiUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
       const msgPayload = {
         chat_id: channelId,
@@ -121,13 +131,13 @@ export async function sendDailyChannelPost(customText = null) {
     }
 
     if (result.ok) {
-      console.log('✅ Daily Photo Card GM Broadcast posted to Telegram!', result.result.message_id);
+      console.log('✅ Generated GM Photo Card Broadcast posted to Telegram!', result.result.message_id);
       return {
         success: true,
         messageId: result.result.message_id,
         chat: channelId,
-        photo: photoUrl,
-        content: caption
+        quote: cleanQuote,
+        category: categoryLabel
       };
     } else {
       console.error('❌ Failed to post to Telegram:', result.description);
@@ -137,7 +147,7 @@ export async function sendDailyChannelPost(customText = null) {
       };
     }
   } catch (err) {
-    console.error('❌ Error sending Telegram broadcast:', err);
+    console.error('❌ Error sending GM Card broadcast:', err);
     return {
       success: false,
       error: err.message || 'Network error sending broadcast'
@@ -183,7 +193,7 @@ export function startTelegramBotListener() {
             if (msg.chat && msg.chat.id) {
               const replyUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
               const replyText = result.success
-                ? `✅ *Photo Card GM Broadcast Sent to Channel!*\n\n*Message ID:* \`${result.messageId}\``
+                ? `✅ *Generated GM Photo Card Sent to Channel!*\n\n*Message ID:* \`${result.messageId}\``
                 : `❌ *Broadcast Failed:* ${result.error}`;
 
               await fetch(replyUrl, {
@@ -216,7 +226,7 @@ const isDirectRun = process.argv[1] && (
 );
 
 if (isDirectRun) {
-  console.log('🚀 Triggering immediate Photo Card GM Broadcast test...');
+  console.log('🚀 Triggering immediate Generated GM Photo Card Broadcast test...');
   sendDailyChannelPost().then(res => {
     console.log('Broadcast Result:', JSON.stringify(res, null, 2));
   });
