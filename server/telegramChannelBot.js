@@ -4,6 +4,7 @@
  */
 
 import 'dotenv/config';
+import cron from 'node-cron';
 import { STATIC_TEMPLATES, CATEGORIES } from '../src/data/contentLibrary.js';
 import { renderGMCardImage } from './generateCardImage.js';
 
@@ -194,6 +195,31 @@ export function startTelegramBotListener() {
   };
 
   pollUpdates();
+}
+
+/**
+ * Daily Morning GM Broadcast Scheduler
+ * Automatically runs every morning at 8:00 AM UTC (or custom cron pattern from BROADCAST_CRON_SCHEDULE)
+ */
+export function startDailyBroadcastScheduler() {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
+  if (!botToken) {
+    console.log('ℹ️ Daily Broadcast Scheduler standby (TELEGRAM_BOT_TOKEN not set).');
+    return;
+  }
+
+  const cronPattern = process.env.BROADCAST_CRON_SCHEDULE || '0 8 * * *'; // Default 8:00 AM daily
+  console.log(`⏰ Daily Morning GM Broadcast Scheduler active! Schedule pattern: '${cronPattern}'`);
+
+  cron.schedule(cronPattern, async () => {
+    console.log('⏰ Running automated daily morning GM broadcast to Telegram Channel...');
+    try {
+      const result = await sendDailyChannelPost();
+      console.log('Daily Morning Broadcast Result:', result);
+    } catch (err) {
+      console.error('Error in daily morning broadcast job:', err);
+    }
+  });
 }
 
 // Execute immediately if executed directly via node CLI

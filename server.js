@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 
-import { sendDailyChannelPost, startTelegramBotListener } from './server/telegramChannelBot.js';
+import { sendDailyChannelPost, startTelegramBotListener, startDailyBroadcastScheduler } from './server/telegramChannelBot.js';
 
 // Health check endpoint for Railway / deployment platform checks
 app.get('/health', (req, res) => {
@@ -118,4 +118,5 @@ app.get('*', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 GM Generator server running on http://0.0.0.0:${PORT}`);
   startTelegramBotListener();
+  startDailyBroadcastScheduler();
 });
