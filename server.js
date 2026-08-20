@@ -1,5 +1,7 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
+import https from 'https';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -10,8 +12,16 @@ const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 
-// Serve static frontend files from dist
-app.use(express.static(path.join(__dirname, 'dist')));
+// Health check endpoint for Railway / deployment platform checks
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+// Serve static frontend files from dist if dist exists
+const distPath = path.join(__dirname, 'dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+}
 
 /**
  * Verify Telegram Channel Subscription API
@@ -38,10 +48,22 @@ app.get('/api/verify-sub', async (req, res) => {
 
   try {
     const cleanChannel = channelUsername.startsWith('@') ? channelUsername : `@${channelUsername}`;
-    const url = `https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${encodeURIComponent(cleanChannel)}&user_id=${userId}`;
-    
-    const response = await fetch(url);
-    const data = await response.json();
+    const apiUrl = `https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${encodeURIComponent(cleanChannel)}&user_id=${userId}`;
+
+    // Helper using native https module for 100% Node compatibility
+    const data = await new Promise((resolve, reject) => {
+      https.get(apiUrl, (telegramRes) => {
+        let body = '';
+        telegramRes.on('data', (chunk) => body += chunk);
+        telegramRes.on('end', () => {
+          try {
+            resolve(JSON.parse(body));
+          } catch (e) {
+            reject(e);
+          }
+        });
+      }).on('error', (err) => reject(err));
+    });
 
     if (data.ok && data.result) {
       const status = data.result.status; // 'creator' | 'administrator' | 'member' | 'restricted' | 'left' | 'kicked'
@@ -67,9 +89,15 @@ app.get('/api/verify-sub', async (req, res) => {
 
 // Fallback all SPA routes to dist/index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  const indexPath = path.join(__dirname, 'dist', 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(200).send('GM Generator app is building...');
+  }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 GM Generator server running on port ${PORT}`);
+// CRITICAL FOR RAILWAY: Must bind to '0.0.0.0' host
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 GM Generator server running on http://0.0.0.0:${PORT}`);
 });
