@@ -139,12 +139,34 @@ Generate your preferred daily GM post with @generategmbot`;
  */
 export function startTelegramBotListener() {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
+  const miniAppUrl = process.env.TELEGRAM_MINI_APP_URL || 'https://t.me/generategmbot';
+
   if (!botToken) {
     console.log('ℹ️ Telegram Bot Listener standby (TELEGRAM_BOT_TOKEN not set).');
     return;
   }
 
-  console.log('🤖 Telegram Bot Command Listener active! Send /postgm or /gm in Telegram chat to trigger.');
+  console.log('🤖 Telegram Bot Command Listener active! Send /start, /postgm or /gm in Telegram chat.');
+
+  // Set Telegram Native Bottom Left Menu Button to open Mini App
+  try {
+    fetch(`https://api.telegram.org/bot${botToken}/setChatMenuButton`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        menu_button: {
+          type: 'web_app',
+          text: 'Open App',
+          web_app: { url: miniAppUrl }
+        }
+      })
+    }).then(res => res.json()).then(data => {
+      if (data.ok) {
+        console.log('✅ Telegram Chat Menu Button set to Open App!');
+      }
+    }).catch(() => {});
+  } catch (e) {}
+
   let offset = 0;
 
   const pollUpdates = async () => {
@@ -160,6 +182,49 @@ export function startTelegramBotListener() {
           if (!msg || !msg.text) continue;
 
           const text = msg.text.trim();
+
+          // Handle /start or /help command
+          if (text.startsWith('/start') || text.startsWith('/help')) {
+            console.log(`📩 /start command received from chat ${msg.chat.id}`);
+
+            const welcomeText = 
+`☀️ *Welcome to GM Generator!* 🚀
+
+Generate your preferred daily GM posts, level up your streak, unlock achievements, and share custom GM cards to your groups & channel!
+
+👇 *Tap the button below to launch the Mini App:*`;
+
+            const inlineKeyboard = {
+              inline_keyboard: [
+                [
+                  {
+                    text: '🚀 Open GM Generator App',
+                    web_app: { url: miniAppUrl }
+                  }
+                ],
+                [
+                  {
+                    text: '📢 Join @generategm Channel',
+                    url: 'https://t.me/generategm'
+                  }
+                ]
+              ]
+            };
+
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: msg.chat.id,
+                text: welcomeText,
+                parse_mode: 'Markdown',
+                reply_markup: inlineKeyboard
+              })
+            });
+            continue;
+          }
+
+          // Handle /postgm, /gm, /broadcast, /dropgm commands
           if (text.startsWith('/postgm') || text.startsWith('/gm') || text.startsWith('/broadcast') || text.startsWith('/dropgm')) {
             console.log(`📩 Command '${text}' received from chat ${msg.chat.id}`);
 
