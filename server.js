@@ -21,6 +21,65 @@ app.get('/health', (req, res) => {
 });
 
 /**
+ * Telegram Webhook Receiver (Handles /start and /gm commands via Webhook)
+ */
+app.post(['/api/telegram-webhook', '/telegram-webhook'], async (req, res) => {
+  res.status(200).send('OK');
+  try {
+    const update = req.body;
+    if (!update) return;
+
+    const msg = update.message || update.channel_post;
+    if (!msg || !msg.text) return;
+
+    const text = msg.text.trim();
+    const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
+    const miniAppUrl = process.env.TELEGRAM_MINI_APP_URL || 'https://t.me/generategmbot';
+
+    if (text.startsWith('/start') || text.startsWith('/help')) {
+      console.log(`📩 Webhook /start command received from chat ${msg.chat.id}`);
+
+      const welcomeText = 
+`☀️ *Welcome to GM Generator!* 🚀
+
+Generate your preferred daily GM posts, level up your streak, unlock achievements, and share custom GM cards to your groups & channel!
+
+👇 *Tap the button below to launch the Mini App:*`;
+
+      const inlineKeyboard = {
+        inline_keyboard: [
+          [
+            {
+              text: '🚀 Open GM Generator App',
+              url: miniAppUrl
+            }
+          ],
+          [
+            {
+              text: '📢 Join @generategm Channel',
+              url: 'https://t.me/generategm'
+            }
+          ]
+        ]
+      };
+
+      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: msg.chat.id,
+          text: welcomeText,
+          parse_mode: 'Markdown',
+          reply_markup: inlineKeyboard
+        })
+      });
+    }
+  } catch (err) {
+    console.error('Error handling Telegram Webhook:', err.message);
+  }
+});
+
+/**
  * Instant Telegram Channel Broadcast Test API
  * GET /api/test-post
  */

@@ -148,6 +148,18 @@ export function startTelegramBotListener() {
 
   console.log('🤖 Telegram Bot Command Listener active! Send /start, /postgm or /gm in Telegram chat.');
 
+  // Clear any existing Webhooks to guarantee 100% reliable long-polling getUpdates
+  try {
+    fetch(`https://api.telegram.org/bot${botToken}/deleteWebhook?drop_pending_updates=false`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          console.log('✅ Telegram Bot Webhook cleared for active long-polling!');
+        }
+      })
+      .catch(() => {});
+  } catch (e) {}
+
   // Set Telegram Native Bottom Left Menu Button to open Mini App
   try {
     fetch(`https://api.telegram.org/bot${botToken}/setChatMenuButton`, {
@@ -199,7 +211,7 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
                 [
                   {
                     text: '🚀 Open GM Generator App',
-                    web_app: { url: miniAppUrl }
+                    url: miniAppUrl
                   }
                 ],
                 [
