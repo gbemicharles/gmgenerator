@@ -1,7 +1,6 @@
 /**
  * Telegram Daily Broadcast Bot Script for @generategmbot
- * Renders exact 1000x1000 Square GM Photo Card Image matching user example
- * and posts via sendPhoto with quote caption & inline app buttons.
+ * Posts clean 16:9 Widescreen Photo Card with GM quote caption and single Open App inline button.
  */
 
 import 'dotenv/config';
@@ -20,7 +19,7 @@ function stripEmojis(str) {
 export async function sendDailyChannelPost(customText = null) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
   const channelId = process.env.TELEGRAM_CHANNEL_ID || process.env.TELEGRAM_CHANNEL_USERNAME || '@generategm';
-  const miniAppUrl = process.env.TELEGRAM_MINI_APP_URL || 'https://t.me/generategmbot/app';
+  const miniAppUrl = process.env.TELEGRAM_MINI_APP_URL || 'https://t.me/generategmbot';
 
   if (!botToken || botToken === 'YOUR_BOT_TOKEN_HERE') {
     return {
@@ -31,7 +30,7 @@ export async function sendDailyChannelPost(customText = null) {
 
   // Pick category and quote
   let rawQuote = '';
-  let categoryObj = { name: '3AM GM', icon: '🌙', color: '#38BDF8' };
+  let categoryObj = { name: 'MOTIVATIONAL', icon: '👑', color: '#F3BA2F' };
 
   if (customText) {
     rawQuote = customText;
@@ -49,16 +48,13 @@ export async function sendDailyChannelPost(customText = null) {
 
   const cleanQuote = stripEmojis(rawQuote);
 
-  // Caption text underneath photo card
+  // Caption text underneath photo card (without "DAILY GM BROADCAST" line)
   const caption = 
-`DAILY GM BROADCAST
-
-“${cleanQuote}”
+`“${cleanQuote}”
 
 Generate your daily GM post with @generategmbot`;
 
-  // Clean inline keyboard buttons (no emojis)
-  const cleanChannel = channelId.startsWith('@') ? channelId : `@${channelId}`;
+  // Inline keyboard button (Single Open App button, no Join Channel button)
   const inlineKeyboard = {
     inline_keyboard: [
       [
@@ -66,18 +62,12 @@ Generate your daily GM post with @generategmbot`;
           text: 'Open GM Generator App',
           url: miniAppUrl
         }
-      ],
-      [
-        {
-          text: 'Join @generategm Channel',
-          url: `https://t.me/${cleanChannel.replace('@', '')}`
-        }
       ]
     ]
   };
 
   try {
-    // 1. Render exact 1:1 1000x1000 Square GM Card PNG Image Buffer (matching user example photo)
+    // 1. Render 16:9 Widescreen GM Card PNG Buffer with high legibility fonts
     const cardPngBuffer = await renderGMCardImage(cleanQuote, categoryObj);
 
     // 2. Upload PNG Photo File Buffer via Telegram sendPhoto API using Blob FormData
@@ -86,7 +76,7 @@ Generate your daily GM post with @generategmbot`;
 
     const formData = new FormData();
     formData.append('chat_id', channelId);
-    formData.append('photo', photoBlob, 'gm_card_1000x1000.png');
+    formData.append('photo', photoBlob, 'gm_card_16by9.png');
     formData.append('caption', caption);
     formData.append('parse_mode', 'Markdown');
     formData.append('reply_markup', JSON.stringify(inlineKeyboard));
@@ -118,7 +108,7 @@ Generate your daily GM post with @generategmbot`;
     }
 
     if (result.ok) {
-      console.log('✅ Exact Square GM Photo Card Broadcast posted to Telegram!', result.result.message_id);
+      console.log('✅ 16:9 GM Photo Card Broadcast posted to Telegram!', result.result.message_id);
       return {
         success: true,
         messageId: result.result.message_id,
@@ -213,7 +203,7 @@ const isDirectRun = process.argv[1] && (
 );
 
 if (isDirectRun) {
-  console.log('🚀 Triggering immediate Square GM Photo Card Broadcast test...');
+  console.log('🚀 Triggering immediate 16:9 GM Photo Card Broadcast test...');
   sendDailyChannelPost().then(res => {
     console.log('Broadcast Result:', JSON.stringify(res, null, 2));
   });

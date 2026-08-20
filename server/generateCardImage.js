@@ -2,7 +2,7 @@ import { createCanvas } from '@napi-rs/canvas';
 
 /**
  * 16:9 Widescreen (1200x675) Royal Gold & Black GM Photo Card Image Generator.
- * Clean, high-impact Web3 landscape card format matching Twitter/Telegram banner standards.
+ * Ultra-high-contrast typography and crystal clear headers/footers.
  * 
  * @param {string} quoteText - GM quote string
  * @param {object} categoryObj - { name: 'MOTIVATIONAL', icon: '👑', color: '#F3BA2F' }
@@ -26,14 +26,14 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   // 2. Royal Gold Ambient Radial Glow
   ctx.save();
   const centerGlow = ctx.createRadialGradient(width / 2, height / 2, 30, width / 2, height / 2, 450);
-  centerGlow.addColorStop(0, 'rgba(243, 186, 47, 0.22)');
+  centerGlow.addColorStop(0, 'rgba(243, 186, 47, 0.24)');
   centerGlow.addColorStop(0.6, 'rgba(184, 134, 11, 0.08)');
   centerGlow.addColorStop(1, 'transparent');
   ctx.fillStyle = centerGlow;
   ctx.fillRect(0, 0, width, height);
 
   const topLeftGlow = ctx.createRadialGradient(180, 140, 10, 180, 140, 320);
-  topLeftGlow.addColorStop(0, 'rgba(255, 215, 0, 0.20)');
+  topLeftGlow.addColorStop(0, 'rgba(255, 215, 0, 0.25)');
   topLeftGlow.addColorStop(1, 'transparent');
   ctx.fillStyle = topLeftGlow;
   ctx.fillRect(0, 0, width, height);
@@ -48,7 +48,7 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
     { x: 1080, y: 560, char: '✦', s: 26 },
     { x: 600, y: 65, char: '✨', s: 26 }
   ];
-  ctx.fillStyle = 'rgba(243, 186, 47, 0.4)';
+  ctx.fillStyle = 'rgba(243, 186, 47, 0.45)';
   for (const sp of sparkles) {
     ctx.font = `${sp.s}px sans-serif`;
     ctx.fillText(sp.char, sp.x, sp.y);
@@ -63,11 +63,11 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
 
   // Outer Gold Halo Shadow
   ctx.save();
-  ctx.shadowColor = 'rgba(243, 186, 47, 0.45)';
+  ctx.shadowColor = 'rgba(243, 186, 47, 0.5)';
   ctx.shadowBlur = 35;
   ctx.shadowOffsetY = 10;
 
-  ctx.fillStyle = 'rgba(12, 11, 10, 0.94)';
+  ctx.fillStyle = 'rgba(12, 11, 10, 0.95)';
   ctx.beginPath();
   ctx.roundRect(margin, margin, cardW, cardH, borderRadius);
   ctx.fill();
@@ -82,79 +82,79 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   goldBorderGrad.addColorStop(1, '#B8860B');
 
   ctx.strokeStyle = goldBorderGrad;
-  ctx.lineWidth = 3.5;
+  ctx.lineWidth = 4;
   ctx.beginPath();
   ctx.roundRect(margin, margin, cardW, cardH, borderRadius);
   ctx.stroke();
 
   // Corner Gold Stars (✦)
   ctx.fillStyle = goldLight;
-  ctx.font = 'bold 18px sans-serif';
-  ctx.fillText('✦', margin + 14, margin + 26);
-  ctx.fillText('✦', width - margin - 26, margin + 26);
+  ctx.font = 'bold 20px sans-serif';
+  ctx.fillText('✦', margin + 14, margin + 28);
+  ctx.fillText('✦', width - margin - 28, margin + 28);
   ctx.fillText('✦', margin + 14, height - margin - 14);
-  ctx.fillText('✦', width - margin - 26, height - margin - 14);
+  ctx.fillText('✦', width - margin - 28, height - margin - 14);
   ctx.restore();
 
-  // 5. Header Row
+  // 5. High-Contrast Header Row
   const headerY = margin + 35;
-  const headerHeight = 48;
+  const headerHeight = 52;
 
   // Left Brand Logo Pill ("☀️ GM GENERATOR")
   ctx.save();
-  ctx.fillStyle = 'rgba(243, 186, 47, 0.12)';
-  ctx.strokeStyle = 'rgba(243, 186, 47, 0.4)';
-  ctx.lineWidth = 1.8;
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+  ctx.strokeStyle = goldLight;
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.roundRect(margin + 30, headerY, 250, headerHeight, 24);
+  ctx.roundRect(margin + 30, headerY, 280, headerHeight, 26);
   ctx.fill();
   ctx.stroke();
 
   ctx.fillStyle = goldLight;
-  ctx.font = 'bold 24px sans-serif';
-  ctx.fillText('☀️', margin + 46, headerY + 33);
+  ctx.font = 'bold 26px sans-serif';
+  ctx.fillText('☀️', margin + 46, headerY + 36);
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 19px "Trebuchet MS", "Arial Black", sans-serif';
-  ctx.fillText('GM GENERATOR', margin + 84, headerY + 32);
+  ctx.font = 'bold 22px "Trebuchet MS", "Arial Black", sans-serif';
+  ctx.fillText('GM GENERATOR', margin + 86, headerY + 35);
   ctx.restore();
 
   // Right Category Tag Pill ("👑 MOTIVATIONAL")
   ctx.save();
-  ctx.font = 'bold 18px "Trebuchet MS", monospace';
+  ctx.font = 'bold 22px "Trebuchet MS", sans-serif';
   const pillText = `${categoryIcon} ${categoryName}`;
-  const pillWidth = ctx.measureText(pillText).width + 42;
+  const pillWidth = ctx.measureText(pillText).width + 48;
   const pillX = width - margin - 30 - pillWidth;
 
-  ctx.fillStyle = 'rgba(243, 186, 47, 0.22)';
-  ctx.strokeStyle = goldPrimary;
-  ctx.lineWidth = 2;
+  ctx.fillStyle = 'rgba(243, 186, 47, 0.28)';
+  ctx.strokeStyle = goldLight;
+  ctx.lineWidth = 2.5;
   ctx.beginPath();
-  ctx.roundRect(pillX, headerY, pillWidth, headerHeight, 24);
+  ctx.roundRect(pillX, headerY, pillWidth, headerHeight, 26);
   ctx.fill();
   ctx.stroke();
 
   ctx.fillStyle = goldLight;
   ctx.shadowColor = goldPrimary;
-  ctx.shadowBlur = 10;
-  ctx.fillText(pillText, pillX + 21, headerY + 32);
+  ctx.shadowBlur = 12;
+  ctx.fillText(pillText, pillX + 24, headerY + 35);
   ctx.restore();
 
   // 6. Center Hero Metallic Gold Typography
   const cleanQuote = quoteText.replace(/^["“]|["”]$/g, '').trim();
 
-  let fontSize = 54;
-  let lineHeight = 72;
+  let fontSize = 56;
+  let lineHeight = 74;
 
   if (cleanQuote.length > 130) {
-    fontSize = 36;
-    lineHeight = 50;
+    fontSize = 38;
+    lineHeight = 52;
   } else if (cleanQuote.length > 80) {
-    fontSize = 42;
-    lineHeight = 58;
+    fontSize = 44;
+    lineHeight = 60;
   } else if (cleanQuote.length > 45) {
-    fontSize = 48;
-    lineHeight = 64;
+    fontSize = 50;
+    lineHeight = 66;
   }
 
   const fontStack = `900 ${fontSize}px "Trebuchet MS", "Arial Black", "Impact", sans-serif`;
@@ -180,8 +180,8 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
 
   // Background Quotation Mark Watermark (" “ ")
   ctx.save();
-  ctx.fillStyle = 'rgba(243, 186, 47, 0.12)';
-  ctx.font = '900 180px Georgia, serif';
+  ctx.fillStyle = 'rgba(243, 186, 47, 0.14)';
+  ctx.font = '900 200px Georgia, serif';
   ctx.textAlign = 'center';
   ctx.fillText('“', width / 2, height / 2 - 20);
   ctx.restore();
@@ -193,13 +193,13 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
 
   const textGrad = ctx.createLinearGradient(0, startY - fontSize, 0, startY + totalTextHeight);
   textGrad.addColorStop(0, '#FFFFFF');
-  textGrad.addColorStop(0.35, '#FFF6D6');
+  textGrad.addColorStop(0.35, '#FFF8E0');
   textGrad.addColorStop(0.85, goldLight);
   textGrad.addColorStop(1, goldPrimary);
 
   ctx.save();
   ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
-  ctx.shadowBlur = 20;
+  ctx.shadowBlur = 22;
   ctx.shadowOffsetY = 6;
   ctx.fillStyle = textGrad;
   ctx.font = fontStack;
@@ -229,37 +229,37 @@ export async function renderGMCardImage(quoteText, categoryObj = { name: 'MOTIVA
   lineGrad.addColorStop(1, 'transparent');
 
   ctx.strokeStyle = lineGrad;
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 2.5;
   ctx.beginPath();
   ctx.moveTo(margin + 30, footerLineY);
   ctx.lineTo(width - margin - 30, footerLineY);
   ctx.stroke();
   ctx.restore();
 
-  // 8. High-Contrast Footer Bar
+  // 8. HIGH-CONTRAST Crystal Clear Footer Bar
   const footerBarY = height - margin - 62;
-  const footerBarHeight = 48;
+  const footerBarHeight = 50;
 
   ctx.save();
-  ctx.fillStyle = 'rgba(243, 186, 47, 0.08)';
-  ctx.strokeStyle = 'rgba(243, 186, 47, 0.25)';
-  ctx.lineWidth = 1;
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+  ctx.strokeStyle = 'rgba(243, 186, 47, 0.4)';
+  ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.roundRect(margin + 30, footerBarY, cardW - 60, footerBarHeight, 14);
+  ctx.roundRect(margin + 30, footerBarY, cardW - 60, footerBarHeight, 16);
   ctx.fill();
   ctx.stroke();
 
-  // Left Footer
+  // Left Footer: ⚡ GM GENERATOR  •  @generategmbot
   ctx.textAlign = 'left';
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 18px "Trebuchet MS", monospace';
-  ctx.fillText('⚡ GM GENERATOR  •  @generategmbot', margin + 50, footerBarY + 31);
+  ctx.font = 'bold 21px "Trebuchet MS", monospace';
+  ctx.fillText('⚡ GM GENERATOR  •  @generategmbot', margin + 50, footerBarY + 33);
 
-  // Right Footer Link
+  // Right Footer Link: t.me/generategmbot 👑 (No /app!)
   ctx.textAlign = 'right';
   ctx.fillStyle = goldLight;
-  ctx.font = 'bold 18px "Trebuchet MS", monospace';
-  ctx.fillText('t.me/generategmbot/app 👑', width - margin - 50, footerBarY + 31);
+  ctx.font = 'bold 21px "Trebuchet MS", monospace';
+  ctx.fillText('t.me/generategmbot 👑', width - margin - 50, footerBarY + 33);
   ctx.restore();
 
   return canvas.toBuffer('image/png');
