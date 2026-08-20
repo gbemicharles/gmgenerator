@@ -41,6 +41,7 @@ export default function SubscribeChannelModal({ isOpen, onClose, onConfirmSubscr
     try {
       const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
       let isSubscribed = false;
+      let checkSuccess = false;
 
       if (botToken) {
         // Direct Telegram API check from client using botToken
@@ -50,20 +51,25 @@ export default function SubscribeChannelModal({ isOpen, onClose, onConfirmSubscr
         const data = await res.json();
 
         if (data.ok && data.result) {
+          checkSuccess = true;
           const status = data.result.status;
           isSubscribed = ['creator', 'administrator', 'member', 'restricted'].includes(status);
+        } else {
+          console.warn('Telegram API check error:', data);
         }
-      } else {
-        // Try backend API route if available
+      }
+
+      // If client didn't have botToken or direct check didn't succeed, try server API
+      if (!checkSuccess) {
         try {
           const res = await fetch(`/api/verify-sub?userId=${userId}`);
           const data = await res.json();
-          if (data.isSubscribed || data.requiresBotToken) {
-            isSubscribed = true;
+          if (data.ok || data.status) {
+            isSubscribed = data.isSubscribed;
+            checkSuccess = true;
           }
         } catch (e) {
-          // Static server fallback
-          isSubscribed = true;
+          console.warn('Server sub verify endpoint error:', e);
         }
       }
 
@@ -76,12 +82,17 @@ export default function SubscribeChannelModal({ isOpen, onClose, onConfirmSubscr
         setIsVerifying(false);
         audioEngine.playSlotSpin();
         triggerHaptic('notification', 'error');
-        setErrorMsg('❌ Verification failed: You have not joined @generategm yet! Tap JOIN @generategm CHANNEL first.');
+
+        if (!botToken && !checkSuccess) {
+          setErrorMsg('⚠️ Telegram Bot Token is missing. Please set VITE_TELEGRAM_BOT_TOKEN to enable real Telegram membership check.');
+        } else {
+          setErrorMsg('❌ Verification failed: You have not joined @generategm yet! Tap JOIN @generategm CHANNEL first, then tap Verify.');
+        }
       }
     } catch (e) {
       console.error('Subscription verification failed:', e);
       setIsVerifying(false);
-      onConfirmSubscribed();
+      setErrorMsg('❌ Failed to check subscription status. Please ensure you have joined @generategm channel.');
     }
   };
 
