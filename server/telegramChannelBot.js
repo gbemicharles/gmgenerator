@@ -8,6 +8,7 @@
  * - Immediate test trigger endpoint & daily cron scheduler
  */
 
+import 'dotenv/config';
 import { PEDRO_CHARACTERS } from '../src/data/pedroCharacters.js';
 
 const TON_GRAM_TEMPLATES = [
