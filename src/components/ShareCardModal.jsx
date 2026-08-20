@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { X, Download, Share2, Copy, Sparkles, Check, Send, Palette } from 'lucide-react';
+import { X, ArrowLeft, Download, Share2, Copy, Sparkles, Check, Send, Palette } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { CATEGORIES } from '../data/contentLibrary';
 import { ESCALATION_LEVELS } from '../utils/escalator';
@@ -80,8 +80,8 @@ export default function ShareCardModal({ isOpen, onClose, gmData, onShareX, onSh
       <div className="modal-content card-modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3>Shareable GM Card</h3>
-          <button className="modal-close-btn" onClick={onClose}>
-            <X size={20} />
+          <button className="modal-close-btn" onClick={onClose} title="Back">
+            <ArrowLeft size={16} /> <span>Back</span>
           </button>
         </div>
 

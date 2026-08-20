@@ -29,7 +29,7 @@ import { DEFAULT_MEME_TOKENS, getAllTokens } from './utils/customTokenManager';
 import { audioEngine } from './utils/audioEngine';
 
 import TelegramGroupBotBanner from './components/TelegramGroupBotBanner';
-import { initTelegramWebApp, triggerHaptic } from './utils/telegramWebApp';
+import { initTelegramWebApp, triggerHaptic, setupTelegramBackButton, hideTelegramBackButton } from './utils/telegramWebApp';
 
 export default function App() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -72,6 +72,46 @@ export default function App() {
     initTelegramWebApp();
     generateNewGM('all', null, false);
   }, []);
+
+  const closeAllModals = () => {
+    setIsCardModalOpen(false);
+    setIsAchievementModalOpen(false);
+    setIsFavoritesModalOpen(false);
+    setIsSlotMachineOpen(false);
+    setIsSubmitGMOpen(false);
+    setIsAddTokenOpen(false);
+    setIsSubscribeModalOpen(false);
+  };
+
+  // Telegram Native BackButton integration
+  useEffect(() => {
+    const isAnyModalOpen = 
+      isCardModalOpen || 
+      isAchievementModalOpen || 
+      isFavoritesModalOpen || 
+      isSlotMachineOpen || 
+      isSubmitGMOpen || 
+      isAddTokenOpen || 
+      isSubscribeModalOpen;
+
+    if (isAnyModalOpen) {
+      setupTelegramBackButton(closeAllModals);
+    } else {
+      hideTelegramBackButton();
+    }
+
+    return () => {
+      hideTelegramBackButton();
+    };
+  }, [
+    isCardModalOpen, 
+    isAchievementModalOpen, 
+    isFavoritesModalOpen, 
+    isSlotMachineOpen, 
+    isSubmitGMOpen, 
+    isAddTokenOpen, 
+    isSubscribeModalOpen
+  ]);
 
   const triggerConfetti = () => {
     try {
@@ -299,21 +339,21 @@ export default function App() {
 
   return (
     <div className="app-wrapper">
+      <ToastNotification toast={toast} />
+
+      <Header 
+        streakData={streakData}
+        unlockedCount={unlockedIds.length}
+        totalAchievements={ACHIEVEMENTS.length}
+        favoritesCount={favoritesList.length}
+        onOpenAchievements={() => setIsAchievementModalOpen(true)}
+        onOpenFavorites={() => setIsFavoritesModalOpen(true)}
+        onOpenSlotMachine={() => setIsSlotMachineOpen(true)}
+        onOpenSubmitGM={() => setIsSubmitGMOpen(true)}
+        onOpenStats={scrollToStats}
+      />
+
       <div className="app-container">
-        <ToastNotification toast={toast} />
-
-        <Header 
-          streakData={streakData}
-          unlockedCount={unlockedIds.length}
-          totalAchievements={ACHIEVEMENTS.length}
-          favoritesCount={favoritesList.length}
-          onOpenAchievements={() => setIsAchievementModalOpen(true)}
-          onOpenFavorites={() => setIsFavoritesModalOpen(true)}
-          onOpenSlotMachine={() => setIsSlotMachineOpen(true)}
-          onOpenSubmitGM={() => setIsSubmitGMOpen(true)}
-          onOpenStats={scrollToStats}
-        />
-
         <main className="main-content">
           <Hero 
             onPrimaryGenerate={() => generateNewGM(activeCategory, selectedToken, true)}

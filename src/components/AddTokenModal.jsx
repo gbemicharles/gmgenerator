@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, PlusCircle, Coins, Sparkles } from 'lucide-react';
+import { X, ArrowLeft, PlusCircle, Coins, Sparkles } from 'lucide-react';
 import { addCustomToken } from '../utils/customTokenManager';
 
 export default function AddTokenModal({ isOpen, onClose, onTokenAdded }) {
@@ -38,8 +38,8 @@ export default function AddTokenModal({ isOpen, onClose, onTokenAdded }) {
             <Coins className="star-gold" size={22} />
             <h3>Add Community Meme Token</h3>
           </div>
-          <button className="modal-close-btn" onClick={onClose}>
-            <X size={20} />
+          <button className="modal-close-btn" onClick={onClose} title="Back">
+            <ArrowLeft size={16} /> <span>Back</span>
           </button>
         </div>
 

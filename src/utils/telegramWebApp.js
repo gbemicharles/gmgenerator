@@ -71,3 +71,32 @@ export function openTelegramLink(url) {
     window.open(url, '_blank', 'noopener,noreferrer');
   }
 }
+
+export function setupTelegramBackButton(onBackClick) {
+  try {
+    const tg = window.Telegram?.WebApp;
+    if (!tg || !tg.BackButton) return;
+
+    if (onBackClick) {
+      tg.BackButton.show();
+      // Remove any existing click callbacks before adding new one
+      tg.BackButton.offClick(onBackClick);
+      tg.BackButton.onClick(onBackClick);
+    } else {
+      tg.BackButton.hide();
+    }
+  } catch (e) {
+    // Unsupported outside TG
+  }
+}
+
+export function hideTelegramBackButton() {
+  try {
+    const tg = window.Telegram?.WebApp;
+    if (tg && tg.BackButton) {
+      tg.BackButton.hide();
+    }
+  } catch (e) {
+    // Unsupported outside TG
+  }
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Star, Copy, Share2, Send, Trash2 } from 'lucide-react';
+import { X, ArrowLeft, Star, Copy, Share2, Send, Trash2 } from 'lucide-react';
 import { getFavorites, toggleFavorite } from '../utils/favoritesManager';
 import { CATEGORIES } from '../data/contentLibrary';
 
@@ -22,8 +22,8 @@ export default function FavoritesModal({ isOpen, onClose, onCopy, onShareX, onSh
             <h3>FAVORITES VAULT</h3>
             <span className="unlocked-pill">{favorites.length} SAVED</span>
           </div>
-          <button className="modal-close-btn" onClick={onClose}>
-            <X size={20} />
+          <button className="modal-close-btn" onClick={onClose} title="Back">
+            <ArrowLeft size={16} /> <span>Back</span>
           </button>
         </div>
 

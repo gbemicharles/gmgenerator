@@ -1,5 +1,5 @@
 import React from 'react';
-import { Send, CheckCircle2, Lock, Sparkles, X } from 'lucide-react';
+import { Send, CheckCircle2, Lock, Sparkles, X, ArrowLeft } from 'lucide-react';
 
 export default function SubscribeChannelModal({ isOpen, onClose, onConfirmSubscribed }) {
   if (!isOpen) return null;
@@ -21,8 +21,8 @@ export default function SubscribeChannelModal({ isOpen, onClose, onConfirmSubscr
             <Lock className="lock-icon" size={22} />
             <h3>JOIN @generategm TO CONTINUE</h3>
           </div>
-          <button className="modal-close-btn" onClick={onClose}>
-            <X size={20} />
+          <button className="modal-close-btn" onClick={onClose} title="Back">
+            <ArrowLeft size={16} /> <span>Back</span>
           </button>
         </div>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Dices, RefreshCw, Copy, Share2, Send, Sparkles } from 'lucide-react';
+import { X, ArrowLeft, Dices, RefreshCw, Copy, Share2, Send, Sparkles } from 'lucide-react';
 import { COMBINATOR } from '../data/contentLibrary';
 import { audioEngine } from '../utils/audioEngine';
 
@@ -46,8 +46,8 @@ export default function SlotMachineModal({ isOpen, onClose, onCopy, onShareX, on
             <Dices className="dice-gold" size={22} />
             <h3>Wildcard GM Slot Machine</h3>
           </div>
-          <button className="modal-close-btn" onClick={onClose}>
-            <X size={20} />
+          <button className="modal-close-btn" onClick={onClose} title="Back">
+            <ArrowLeft size={16} /> <span>Back</span>
           </button>
         </div>
 

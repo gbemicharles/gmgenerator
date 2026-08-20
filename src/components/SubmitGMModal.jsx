@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Send, Sparkles, PlusCircle } from 'lucide-react';
+import { X, ArrowLeft, Send, Sparkles, PlusCircle } from 'lucide-react';
 import { CATEGORIES } from '../data/contentLibrary';
 import { addCustomSubmission } from '../utils/communitySubmissionManager';
 
@@ -27,8 +27,8 @@ export default function SubmitGMModal({ isOpen, onClose, onSubmitted }) {
             <PlusCircle className="star-gold" size={22} />
             <h3>EXPAND DATABASE: SUBMIT GM</h3>
           </div>
-          <button className="modal-close-btn" onClick={onClose}>
-            <X size={20} />
+          <button className="modal-close-btn" onClick={onClose} title="Back">
+            <ArrowLeft size={16} /> <span>Back</span>
           </button>
         </div>
 

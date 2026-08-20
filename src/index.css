@@ -70,6 +70,7 @@ button {
 
 /* Header Component */
 .header-container {
+  width: 100%;
   position: sticky;
   top: 0;
   z-index: 90;
@@ -78,7 +79,7 @@ button {
   -webkit-backdrop-filter: blur(20px);
   padding-top: calc(0.85rem + env(safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px));
   padding-bottom: 0.85rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   margin-bottom: 1rem;
 }
 
@@ -94,6 +95,9 @@ button {
 }
 
 .header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -937,11 +941,24 @@ button {
 }
 
 .modal-close-btn {
-  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
 }
 
 .modal-close-btn:hover {
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #FFFFFF;
 }
 
 .modal-body {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Trophy, Lock, CheckCircle2, Flame } from 'lucide-react';
+import { X, ArrowLeft, Trophy, Lock, CheckCircle2, Flame } from 'lucide-react';
 import { ACHIEVEMENTS, getUnlockedAchievements } from '../utils/achievementManager';
 
 export default function AchievementModal({ isOpen, onClose, streakData }) {
@@ -16,8 +16,8 @@ export default function AchievementModal({ isOpen, onClose, streakData }) {
             <h3>GM ACHIEVEMENTS</h3>
             <span className="unlocked-pill">{unlockedIds.length} / {ACHIEVEMENTS.length} UNLOCKED</span>
           </div>
-          <button className="modal-close-btn" onClick={onClose}>
-            <X size={20} />
+          <button className="modal-close-btn" onClick={onClose} title="Back">
+            <ArrowLeft size={16} /> <span>Back</span>
           </button>
         </div>
 
