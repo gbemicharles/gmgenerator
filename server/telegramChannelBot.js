@@ -1,7 +1,7 @@
 /**
  * Telegram Daily Broadcast & Command Listener Bot Script for @generategmbot
  * Handles automated channel broadcasts, /start command welcome messages,
- * and Telegram Mini App menu buttons.
+ * and native Telegram Mini App inline button launches.
  */
 
 import 'dotenv/config';
@@ -21,7 +21,7 @@ function stripEmojis(str) {
 export async function sendDailyChannelPost(customText = null) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
   const channelId = process.env.TELEGRAM_CHANNEL_ID || process.env.TELEGRAM_CHANNEL_USERNAME || '@generategm';
-  const miniAppUrl = process.env.TELEGRAM_MINI_APP_URL || 'https://t.me/generategmbot';
+  const webAppDirectUrl = process.env.WEBAPP_URL || process.env.VITE_APP_URL || 'https://gmgenerator-production.up.railway.app';
 
   if (!botToken || botToken === 'YOUR_BOT_TOKEN_HERE') {
     return {
@@ -56,13 +56,13 @@ export async function sendDailyChannelPost(customText = null) {
 
 Generate your preferred daily GM post with @generategmbot`;
 
-  // Inline keyboard button (Single Open App button)
+  // Inline keyboard button with native web_app property to launch Mini App directly
   const inlineKeyboard = {
     inline_keyboard: [
       [
         {
           text: 'Open GM Generator App',
-          url: miniAppUrl
+          web_app: { url: webAppDirectUrl }
         }
       ]
     ]
@@ -140,7 +140,7 @@ Generate your preferred daily GM post with @generategmbot`;
  */
 export function startTelegramBotListener() {
   const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN;
-  const miniAppUrl = process.env.TELEGRAM_MINI_APP_URL || 'https://t.me/generategmbot';
+  const webAppDirectUrl = process.env.WEBAPP_URL || process.env.VITE_APP_URL || 'https://gmgenerator-production.up.railway.app';
 
   if (!botToken) {
     console.log('ℹ️ Telegram Bot Listener standby (TELEGRAM_BOT_TOKEN not set).');
@@ -158,7 +158,7 @@ export function startTelegramBotListener() {
         menu_button: {
           type: 'web_app',
           text: 'Open App',
-          web_app: { url: miniAppUrl }
+          web_app: { url: webAppDirectUrl }
         }
       })
     }).then(res => res.json()).then(data => {
@@ -200,7 +200,7 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
                 [
                   {
                     text: '🚀 Open GM Generator App',
-                    url: miniAppUrl
+                    web_app: { url: webAppDirectUrl }
                   }
                 ],
                 [
@@ -229,11 +229,9 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
           if (text.startsWith('/postgm') || text.startsWith('/gm') || text.startsWith('/broadcast') || text.startsWith('/dropgm')) {
             console.log(`📩 Command '${text}' received from chat ${msg.chat.id}`);
 
-            // Extract optional custom quote written after command
             const customText = text.replace(/^\/(postgm|gm|broadcast|dropgm)(@\w+)?\s*/i, '').trim();
             const result = await sendDailyChannelPost(customText || null);
 
-            // Send confirmation reply back to the sender
             if (msg.chat && msg.chat.id) {
               const replyUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
               const replyText = result.success
@@ -254,7 +252,7 @@ Generate your preferred daily GM posts, level up your streak, unlock achievement
         }
       }
     } catch (err) {
-      // Background poll retry
+      // Retry loop
     } finally {
       setTimeout(pollUpdates, 2000);
     }
