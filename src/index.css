@@ -1305,61 +1305,102 @@ button {
 /* Footer */
 .app-footer {
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 0.75rem 1rem 1rem;
+  padding: 0.8rem 1rem 1rem;
   margin-top: 0.75rem;
 }
 
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.4rem;
 }
 
-.footer-compact-row {
+.footer-top-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem 1rem;
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  justify-content: center;
+  gap: 0.35rem 0.75rem;
 }
 
-.footer-brand-meta {
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.92rem;
+}
+
+.footer-pedro-tag {
+  font-size: 0.68rem;
+  padding: 0.1rem 0.45rem;
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 10px;
+  color: #C084FC;
+}
+
+.footer-tagline {
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  margin: 0;
+}
+
+.creator-footer-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.75rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  font-size: 0.75rem;
+}
+
+.creator-info-group {
   display: flex;
   align-items: center;
   gap: 0.35rem;
 }
 
-.footer-title {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  color: var(--text-primary);
-  letter-spacing: 0.05em;
-}
-
-.footer-divider, .dot-divider {
-  color: rgba(255, 255, 255, 0.2);
-}
-
-.creator-text strong {
+.creator-name {
   color: var(--accent-gold);
 }
 
-.footer-social-links {
+.creator-social-links {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
-.footer-social-links .social-link {
+.social-link {
   color: var(--text-secondary);
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.15s ease;
 }
 
-.footer-social-links .social-link:hover {
+.social-link:hover {
   color: var(--accent-gold);
+}
+
+.disclaimer-text {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.footer-copyright {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
 }
 
 /* Animations */
